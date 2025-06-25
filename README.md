@@ -63,36 +63,6 @@ Este guia contém os prompts necessários para interagir com o Gemini durante o 
 Olá, Gemini. Estamos iniciando o trabalho em um novo branch. Sua missão é preparar o ambiente e iniciar o ciclo de trabalho.
 
 Execute as **Fases 1 e 2** do arquivo `GEMINI.md` sequencialmente para colocar o projeto em estado de pronto para a execução das tarefas.
-
-Claro, aqui está a seção "O Fluxo de Trabalho Orientado a Tarefas" em diante, pronta para ser copiada.
-
-Markdown
-
-## O Fluxo de Trabalho Orientado a Tarefas
-
-O trabalho com o Gemini é organizado em um ciclo de vida que ocorre em seu próprio branch. O processo é guiado por um plano mestre (`working-plan.md`) e executado através de tarefas atômicas gerenciadas pelo agente.
-
-### Fase 1: Planejamento (Humano + IA)
-
-O desenvolvedor, atuando como arquiteto, colabora com a IA para analisar o código e discutir a implementação. Esta fase culmina na geração de um arquivo `working-plan.md`, que contém o roteiro detalhado para o agente Gemini.
-
-### Fase 2: Execução (Agente Gemini)
-
-Em um novo branch, o agente Gemini é acionado. Ele lê o `working-plan.md`, prepara o ambiente e decompõe o plano em `task`s atômicas no diretório `/tasks/backlog/`. A partir daí, ele executa as tarefas seguindo a lógica definida no `GEMINI.md`, utilizando o `gemini-cli` para interagir com o sistema de arquivos, realizar pesquisas e gerar código.
-
-### Fase 3: Finalização e Relatório (Agente Gemini)
-
-Após todas as `task`s serem concluídas, Gemini consolida os relatórios de execução em um único relatório final, arquivado em `/final-reports/`, e limpa o ambiente de trabalho, deixando o branch pronto para a revisão.
-
-## Guia de Prompts Essenciais
-
-Este guia contém os prompts necessários para interagir com o Gemini durante o ciclo de vida de desenvolvimento.
-
-**Prompt 1: Início dos Trabalhos no Branch**
-```markdown
-Olá, Gemini. Estamos iniciando o trabalho em um novo branch. Sua missão é preparar o ambiente e iniciar o ciclo de trabalho.
-
-Execute as **Fases 1 e 2** do arquivo `GEMINI.md` sequencialmente para colocar o projeto em estado de pronto para a execução das tarefas.
 ```
 
 **Prompt 2: Continuar Trabalho**
