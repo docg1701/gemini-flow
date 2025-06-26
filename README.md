@@ -79,12 +79,10 @@ PLANO_YAML:
 [Cole aqui o YAML completo gerado na Fase 1]
 """
 ---
-
 INSTRUÇÃO PARA O AGENTE:
-Siga rigorosamente sua constituição (`GEMINI.md`) e o plano fornecido.
+Siga rigorosamente sua constituição (`gemini-constitution.md`) e o plano fornecido.
 
 **Sua sequência de ações:**
-
 1.  Crie um branch Git apropriado para este trabalho (ex: `feature/jwt-auth-YYYYMMDD`).
 2.  Para cada item na seção `tasks` do YAML, crie uma GitHub Issue correspondente usando `gh issue create`. O corpo da issue deve conter a descrição e os critérios de aceitação.
 3.  Execute o ciclo de desenvolvimento para cada issue, uma por uma, respeitando as dependências:
