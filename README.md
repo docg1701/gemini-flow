@@ -1,147 +1,108 @@
-# gemini-flow 🚀
+# Gemini-Flow v2.0 🚀
 
-Bem-vindo ao `gemini-flow`, um processo estruturado para o desenvolvimento de software de alta qualidade utilizando o `gemini-cli`.
-
-## Visão Geral
-
-Este repositório fornece um fluxo de trabalho baseado em prompts para guiar o `gemini-cli` através das fases do ciclo de vida de desenvolvimento de software (SDLC). O objetivo é substituir interações vagas por comandos precisos, resultando em código e planejamento mais seguros, estruturados e fáceis de manter.
+Bem-vindo ao Gemini-Flow 2.0, um sistema de desenvolvimento orientado a IA que utiliza ferramentas modernas para transformar planos em código.
 
 ## Como Usar
 
-1.  **Configure o Agente:** Configure seu `gemini-cli` para usar o conteúdo do arquivo `GEMINI.md` como seu prompt de sistema ou base. Isso garante que o agente siga as regras de comportamento e raciocínio definidas.
-2.  **Siga as Fases:** Navegue pelas fases de desenvolvimento abaixo.
-3.  **Copie e Cole:** Copie o template de prompt da fase desejada, preencha os placeholders (ex: `[sua ideia]`) e envie para o `gemini-cli`.
-4.  **Fiscalize e Itere:** Revise a saída do Gemini. O bloco `<thinking>` oferece total transparência sobre o processo do agente. Use essa informação para refinar seus prompts ou corrigir o curso.
+1.  **Configure o Agente:** Garanta que seu `gemini-cli` esteja configurado para usar o `gemini-constitution.md` como seu prompt de sistema.
+2.  **Siga as Fases:** Use os prompts abaixo para guiar o agente através do ciclo de vida de desenvolvimento.
+
 ---
 
-## Prompts para o Ciclo de Desenvolvimento
+## Guia de Prompts Essenciais
 
-### Fase 1: Planejamento
+### Fase 1: Planejamento (Humano + Gemini)
 
-O objetivo é transformar uma ideia vaga em um plano de projeto estruturado em YAML, conforme a teoria do Meta-Prompt.
+**Objetivo:** Colaborar com o Gemini para criar um plano de trabalho detalhado. Este processo é idêntico em espírito ao do `jules-flow`, mas com uma saída mais estruturada.
 
-**Prompt 1.1: Geração do Plano Global**
+**Prompt 1.1: Iniciar Planejamento**
+*Cole este prompt no `gemini-cli` e anexe o contexto do seu projeto usando MCPs.*
+
+**Exemplo de Comando no Terminal:**
+
+```bash
+gemini-cli @git(log:-n 10) @file(package.json,main.go) "PROMPT_PLANEJAMENTO: [descreva aqui o seu objetivo, ex: 'Implementar um sistema de login com autenticação JWT']."
+```
+
+**Conteúdo do Prompt (para colar no `gemini-cli` se não usar a linha de comando):**
 
 ```
-PROMPT: Geração de Plano de Software.
-DESCRIÇÃO_PROJETO: "[Descreva a ideia central do seu projeto de forma clara e concisa. Ex: Uma plataforma de agendamento de mentorias para desenvolvedores juniores.]"
-STACK_TECNOLOGICO_ALVO: "[Liste as linguagens, frameworks e bancos de dados que você pretende usar. Ex: Frontend em Vue.js com TypeScript, Backend em Go com Gin, Banco de Dados PostgreSQL.]"
+PROMPT_PLANEJAMENTO: [descreva aqui o seu objetivo]
 
-```
 ---
+INSTRUÇÃO PARA O AGENTE:
+Você é um assistente especialista em arquitetura de software, operando sob a constituição `gemini-constitution.md`.
 
-### Fase 2: Escolha de Ferramentas
+Sua missão é colaborar comigo para criar um plano técnico detalhado.
 
-Com o plano em mãos, detalhamos as ferramentas e bibliotecas específicas.
+**Etapa 1: Análise e Discussão Colaborativa**
+1.  Analise o contexto que forneci (`@git`, `@file`, etc.).
+2.  Inicie uma discussão técnica: sugira as melhores práticas, bibliotecas, arquivos a serem modificados e estratégia de testes. Faça perguntas para refinar a abordagem.
 
-**Prompt 2.1: Detalhamento do Ecossistema de Ferramentas**
+**Etapa 2: Geração do Plano Formal**
+1.  Aguarde meu comando explícito: `FINALIZE O PLANO`.
+2.  Ao recebê-lo, gere um plano de trabalho em formato **YAML**. O plano deve conter:
+    - `geral_objective`: Um resumo claro.
+    - `tasks`: Uma lista de tarefas, onde cada tarefa tem `title`, `description` (com critérios de aceitação), e `dependencies` (lista de IDs de outras tarefas).
+```
+
+**Exemplo de Saída YAML Esperada:**
+```yaml
+geral_objective: "Implementar autenticação JWT para a API."
+tasks:
+  - id: "TASK-001"
+    title: "Adicionar bibliotecas de JWT e hash de senha"
+    description: "Adicionar as dependências 'golang-jwt/jwt' e 'golang.org/x/crypto/bcrypt' ao go.mod."
+    dependencies: []
+  - id: "TASK-002"
+    title: "Criar endpoint de registro (/register)"
+    description: "Criar um endpoint POST que recebe email/senha, faz o hash da senha e salva o novo usuário."
+    dependencies: ["TASK-001"]
+  - id: "TASK-003"
+    title: "Criar endpoint de login (/login)"
+    description: "Criar um endpoint POST que valida as credenciais e retorna um token JWT."
+    dependencies: ["TASK-002"]
+```
+
+### Fase 2: Execução (Gemini Autônomo)
+
+**Objetivo:** Instruir o Gemini a executar o plano YAML gerado, utilizando todo o seu ferramental.
+
+**Prompt 2.1: Executar Plano de Trabalho**
+*Este prompt aciona o fluxo de trabalho completo: criação de branch, issues, código, testes e PR.*
 
 ```
-PROMPT: Detalhamento do Ecossistema de Ferramentas.
+PROMPT_EXECUCAO: Execute o plano de trabalho.
+
 PLANO_YAML:
 """
-[Cole aqui o YAML gerado na Fase 1]
+[Cole aqui o YAML completo gerado na Fase 1]
 """
-FOCO_ANALISE: "[Especifique uma área para análise. Ex: 'Com base no plano, recomende as melhores bibliotecas de UI para Vue.js e justifique a escolha para os componentes definidos.' ou 'Compare ORMs para Go adequados para o esquema de banco de dados proposto.']"
-```
 ---
 
-### Fase 3: Roteiro de Desenvolvimento (Tasks)
+INSTRUÇÃO PARA O AGENTE:
+Siga rigorosamente sua constituição (`GEMINI.md`) e o plano fornecido.
 
-Quebramos o plano de implementação em um roteiro detalhado, pronto para um sistema de gerenciamento de projetos.
+**Sua sequência de ações:**
 
-**Prompt 3.1: Geração de Épicos e User Stories**
-
-```
-PROMPT: Geração de Roteiro de Desenvolvimento (Épicos e User Stories).
-PLANO_YAML:
-"""
-[Cole aqui o YAML gerado na Fase 1]
-"""
-METODOLOGIA: "[Especifique a metodologia. Ex: Scrum]"
-OUTPUT_FORMAT: "Gere uma lista de Épicos. Para cada Épico, detalhe as User Stories correspondentes no formato 'Como um [usuário], eu quero [objetivo], para que [benefício]'."
-```
----
-
-### Fase 4: Pesquisa de Referências
-
-Antes de codificar, buscamos a documentação mais atualizada para garantir as melhores práticas.
-
-**Prompt 4.1: Pesquisa em Documentação**
+1.  Crie um branch Git apropriado para este trabalho (ex: `feature/jwt-auth-YYYYMMDD`).
+2.  Para cada item na seção `tasks` do YAML, crie uma GitHub Issue correspondente usando `gh issue create`. O corpo da issue deve conter a descrição e os critérios de aceitação.
+3.  Execute o ciclo de desenvolvimento para cada issue, uma por uma, respeitando as dependências:
+    a. Obtenha contexto com `@file` e `@web` conforme necessário.
+    b. Escreva o código e os testes.
+    c. Rode os testes para validar.
+    d. Faça o commit das alterações com uma mensagem que feche a issue (ex: `feat: Implementa endpoint de login (closes #123)`).
+4.  Após todas as issues serem fechadas, crie um Pull Request (`gh pr create`) com um resumo de todo o trabalho realizado.
+5.  Aguarde a revisão humana.
 
 ```
-PROMPT: Pesquisa de Referências em Documentação Atualizada.
-MCP_SERVER: "context7"
-TAREFA_ESPECIFICA: "[Descreva a tarefa que você precisa implementar. Ex: 'Implementar autenticação JWT no backend Go com o framework Gin, seguindo as melhores práticas de segurança de 2025.']"
-FOCO_PESQUISA: "Busque tutoriais, exemplos de código e a documentação oficial. Priorize fontes publicadas nos últimos 18 meses. Forneça um resumo e os links."
-```
----
 
-### Fase 5: Controle de Tarefas e Codificação
+### Fase 3: Correção e Iteração (Humano + Gemini)
 
-Geramos o código para uma tarefa específica, seguindo o plano.
+**Objetivo:** Aplicar o feedback de uma revisão de código.
 
-**Prompt 5.1: Implementação de Tarefa**
+**Prompt 3.1: Aplicar Feedback do Pull Request**
 
-```
-PROMPT: Implementação de Tarefa Específica.
-PLANO_YAML:
-"""
-[Cole aqui o YAML completo]
-"""
-ID_TAREFA: "[Cole o ID da tarefa do plano. Ex: TASK-003]"
-REFERENCIAS:
-"""
-[Opcional: cole aqui os resultados da pesquisa da Fase 4]
-"""
-OUTPUT_FORMAT: "Gere o código completo para esta tarefa, incluindo arquivos, estrutura de pastas e testes unitários. Explique as decisões de implementação."
-```
----
-
-### Fase 6: Controle de Versionamento
-
-Mantemos o repositório organizado e seguimos uma estratégia de branching clara.
-
-**Prompt 6.1: Criação de Estratégia de Branch**
-
-```
-PROMPT: Controle de Versionamento.
-TAREFA_ATUAL: "Implementação da feature: [Nome da feature ou ID da tarefa, ex: Autenticação de Usuário]."
-ESTRATEGIA_BRANCHING: "[GitFlow ou GitHub Flow]"
-AÇÃO: "Gere os comandos git exatos, desde a criação da branch até a abertura do Pull Request (PR), incluindo um template de descrição para o PR."
-```
----
-
-### Fase 7: Atualização de Documentação
-
-O código só está completo quando a documentação está atualizada.
-
-**Prompt 7.1: Geração de Documentação de API**
-
-```
-PROMPT: Atualização de Documentação Oficial.
-TIPO_DOCUMENTACAO: "[Swagger/OpenAPI, ou Documentação de Componente em Markdown]"
-CODIGO_FONTE:
-"""
-[Cole o código da função, classe ou endpoint da API que você acabou de criar]
-"""
-AÇÃO: "Gere a documentação correspondente para o código fornecido, seguindo as melhores práticas para o tipo de documentação especificado."
-
-```
----
-
-### Fase 8: Resolução de Bugs e Issues
-
-Abordamos problemas de forma sistemática e organizada.
-
-**Prompt 8.1: Análise e Correção de Bug**
-
-```
-PROMPT: Resolução de Bug.
-DESCRIÇÃO_BUG: "[Descreva o comportamento inesperado. Inclua logs de erro, se houver. Ex: 'Ao tentar fazer login com uma senha incorreta, a API retorna um erro 500 Internal Server Error ao invés de um 401 Unauthorized.']"
-CODIGO_RELEVANTE:
-"""
-[Cole o trecho de código onde você suspeita que o erro ocorre]
-"""
-AÇÃO: "Analise o código, identifique a causa raiz do bug, proponha a correção e gere o código corrigido com uma explicação da mudança."
+```bash
+gemini-cli @git(diff) @web(URL_DO_PR) "PROMPT_CORRECAO: Aplique o feedback do PR. As discussões e solicitações de mudança estão na URL fornecida. Analise o `diff` atual e o feedback para gerar o código corrigido."
 ```
