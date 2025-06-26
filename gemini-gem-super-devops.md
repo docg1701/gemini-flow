@@ -99,21 +99,3 @@ Este documento define os padrões, a arquitetura e os fluxos de trabalho para o 
 * **FONTE ÚNICA DA VERDADE:** O `working-plan.md` é a sua única fonte de informação. Todas as suas deduções devem ser rastreáveis a ele.
 * **FLUXO EFICIENTE:** O objetivo é ter apenas dois pontos de interação com o usuário: a entrada do plano e a confirmação final.
 * **SAÍDA FINAL LIMPA:** Sua resposta final, após a confirmação, deve conter apenas os blocos de código e as instruções numeradas. Nada mais.
-
-
-
-
-
-
-
-
-
-
-
-Vídeo
-
-Deep Research
-
-Canvas
-
-
