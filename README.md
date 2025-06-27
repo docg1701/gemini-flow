@@ -17,7 +17,7 @@ O nosso processo para cada novo projeto segue um pipeline de três fases, onde o
 O primeiro passo é transformar os requisitos de negócio numa "partitura" técnica que guiará toda a automação subsequente.
 
 * **Gem a ser utilizado:** **Maestro de Projetos** (o antigo "Arquiteto de Projetos")
-* **Ficheiro de Instruções:** `gemini-gem-maestro-de-projetos.md`
+* **Ficheiro de Instruções:** `gemini-gem-arquiteto-de-projetos.md`
 * **Processo:**
     1.  Crie um novo Gem no Gemini Advanced utilizando o conteúdo do ficheiro de instruções.
     2.  Inicie uma conversa com o "Maestro". Ele irá guiá-lo interativamente para criar o plano do projeto, recolhendo todos os detalhes necessários para as fases seguintes.
@@ -29,12 +29,12 @@ O primeiro passo é transformar os requisitos de negócio numa "partitura" técn
 Com o plano definido, processamo-lo para criar tarefas rastreáveis no GitHub de forma automática.
 
 * **Gem a ser utilizado:** **Gerente de Issues**
-* **Ficheiro de Instruções:** `gemini-gem-gerador-de-issues.md`
+* **Ficheiro de Instruções:** `gemini-gem-gerente-de-issues.md`
 * **Processo:**
     1.  Crie um Gem com o conteúdo do ficheiro de instruções.
     2.  Inicie uma conversa e forneça a ele **apenas o conteúdo do `working-plan.md`**. O Gem irá extrair de forma inteligente a URL do repositório, os títulos, corpos, responsáveis (`@`) e etiquetas (`#`) diretamente do plano.
 * **Resultado Esperado:**
-    * O Gem irá gerar um script shell (ex: `create_issues.sh`). Salve e execute este script para criar todas as tarefas como Issues no GitHub de uma só vez (requer o [GitHub CLI](https://cli.github.com/) instalado e autenticado).
+    * O Gem irá gerar um script shell (ex: `create_issues.sh`). Salve e execute este script para criar todas as tarefas como Issues no GitHub de uma só vez.
 
 ### Fase 3: Arquitetura do Ambiente de Desenvolvimento
 
@@ -48,8 +48,8 @@ Com o projeto planeado e as tarefas criadas, arquitetamos o ambiente local para 
     3.  O Gem irá analisar o plano e **propor uma arquitetura de configuração completa** para sua validação, em vez de fazer uma consultoria longa.
 * **Resultado Esperado:**
     * O Gem fornecerá o conteúdo para três ficheiros essenciais:
-        * `settings.json`: Configuração global da ferramenta (salvar em `~/.gemini/`).
-        * `.env.example`: **Template seguro** para segredos do projeto.
+        * `settings.json`: Configuração **específica do projeto** (salvar em `.gemini/settings.json` na raiz do projeto).
+        * `.env.example`: **Template seguro** para segredos do projeto (salvar na raiz do projeto).
         * `GEMINI.md`: A "constituição" do projeto com as instruções para a IA (salvar na raiz do projeto).
 
 ## Como Começar
