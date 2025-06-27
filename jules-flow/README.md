@@ -64,7 +64,7 @@ git push
 
 ## O Fluxo de Trabalho Orientado a Tarefas
 
-O trabalho com Jules é organizado em um ciclo de vida dinâmico para cada nova funcionalidade, que ocorre em seu próprio branch (`jules-<timestamp>`). O processo é guiado por um plano mestre e executado através de tarefas atômicas que gerenciam seu próprio estado.
+O trabalho com Jules é organizado em um ciclo de vida dinâmico para cada nova funcionalidade, que ocorre em seu próprio branc. O processo é guiado por um plano mestre e executado através de tarefas atômicas que gerenciam seu próprio estado.
 
 ### Fase 1: Planejamento (Humano + Gemini)
 
@@ -107,17 +107,11 @@ Seu fluxo de trabalho é dividido em duas etapas distintas:
 3.  O conteúdo do arquivo deve seguir **rigorosamente** a estrutura abaixo, sem desvios:
 
 ---
-`# Plano de Trabalho - Branch: jules-YYYYMMDDHHMMSS`
-
-`(O timestamp no formato ano-mês-dia-hora-minuto-segundo DEVE ser gerado por você.)`
-
-`## Objetivo Geral`
-
-`(Um resumo claro e conciso do objetivo técnico da funcionalidade, conforme discutido.)`
-
-`## Passo a Passo da Execução para Jules`
-
-`(Uma lista numerada de ações concretas, atômicas e sequenciais que o agente Jules deve executar. Cada passo deve ser uma instrução clara, como "Crie uma task do tipo 'development' para modificar o arquivo X" ou "Crie uma task do tipo 'test' para a função Y".)`
+# Plano de Trabalho para Jules
+## Objetivo Geral
+(Um resumo claro e conciso do objetivo técnico da funcionalidade, conforme discutido.)
+## Passo a Passo da Execução para Jules
+(Uma lista numerada de ações concretas, atômicas e sequenciais que o agente Jules deve executar. Cada passo deve ser uma instrução clara, como "Crie uma task do tipo 'development' para modificar o arquivo X" ou "Crie uma task do tipo 'test' para a função Y".)
 ---
 
 **Regras Adicionais:**
@@ -128,6 +122,8 @@ Seu fluxo de trabalho é dividido em duas etapas distintas:
 ### 2. Prompts de Execução (para o Jules)
 
 Use os prompts a seguir para gerenciar o trabalho de Jules no branch de desenvolvimento.
+
+**ATENÇÃO:** Antes de utilizar pela primeira vez o Prompt 2.1, inicie um jules-taks com um prompt inicial simples como "Analise este repositório" para que o Jules compreenda todo o contexto do projeto, faça o boot no VM com segurança. Depois dessa etapa preliminar, os prompts abaixo funcionam (quase) sem falhar.
 
 **Prompt 2.1: Início dos Trabalhos no Branch**
 ```markdown
@@ -142,14 +138,14 @@ Use este comando para instruir Jules a executar as tarefas pendentes. Ele possui
 
 *Para executar apenas a próxima tarefa disponível:*
 ```markdown
-Olá, Jules. É hora de retomar seu trabalho neste branch.
+Olá, Jules. É hora de retomar seu trabalho em um novo branch.
 
 Execute a **Fase 3** do arquivo `jules-flow/instructions-for-jules.md` para processar a próxima tarefa disponível no backlog.
 ```
 
 *Para executar um lote de tarefas (ex: 3 tarefas em sequência):*
 ```markdown
-Olá, Jules. É hora de retomar seu trabalho neste branch.
+Olá, Jules. É hora de retomar seu trabalho em um novo branch.
 
 Execute a **Fase 3** do arquivo `jules-flow/instructions-for-jules.md` **3 vezes em sequência**, processando um lote de tarefas do backlog sem pausas entre elas.
 ```
@@ -159,7 +155,7 @@ Execute a **Fase 3** do arquivo `jules-flow/instructions-for-jules.md` **3 vezes
 Use este prompt após todas as tarefas terem sido concluídas com sucesso.
 
 ```markdown
-Olá, Jules. O trabalho de desenvolvimento neste branch foi concluído.
+Olá, Jules. O trabalho de desenvolvimento foi concluído.
 
 Execute a **Fase 4** do arquivo `jules-flow/instructions-for-jules.md` para gerar o relatório final e limpar o ambiente de trabalho.
 ```
@@ -184,7 +180,7 @@ Execute a **Fase 5** do arquivo `jules-flow/instructions-for-jules.md`, utilizan
 Use este prompt para iniciar uma revisão de qualidade do código gerado.
 
 ```markdown
-Olá, Jules. O desenvolvimento principal neste branch foi concluído.
+Olá, Jules. O trabalho de desenvolvimento foi concluído.
 
 Execute a **Fase 6** do arquivo `jules-flow/instructions-for-jules.md` para realizar uma revisão de qualidade no código produzido e identificar possíveis melhorias.
 ```
@@ -196,7 +192,7 @@ Use este prompt quando uma tarefa falhar e o trabalho for bloqueado.
 ```markdown
 Olá, Jules. Identificamos que a tarefa `task-XXX` falhou.
 
-Siga o procedimento de tratamento de falhas descrito na **Fase 3 (passo g)** do arquivo `jules-flow/instructions-for-jules.md` para analisar o problema e criar uma nova tarefa de correção.
+Siga o procedimento de tratamento de falhas descrito na **Fase 3 (passo 7)** do arquivo `jules-flow/instructions-for-jules.md` para analisar o problema. Em seguida, crie uma nova task de correção.
 ```
 
 ## Estrutura de Diretórios
@@ -206,7 +202,7 @@ Siga o procedimento de tratamento de falhas descrito na **Fase 3 (passo g)** do 
     * `/in_progress/`: Contém a tarefa que está sendo executada no momento.
     * `/done/`: Contém tarefas concluídas com sucesso.
     * `/failed/`: Contém tarefas que falharam durante a execução.
-    * `/final-reports/`: Contém os relatórios finais consolidados de cada branch de trabalho.
+    * `/final-reports/`: Contém os relatórios finais consolidados de cada etapa de trabalho.
     * `/docs/`: Contém documentação gerada pelo Jules-Flow.
         * `/reference/`: Arquivos de referência criados durante a fase de pesquisa.
     * `/templates/`: Contém o modelo `task-template.md` para novas tarefas.
