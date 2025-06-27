@@ -1,4 +1,4 @@
-# Plano de Trabalho - Branch: jules-20250627135500
+# Plano de Trabalho para Jules
 
 ## Objetivo Geral
 
