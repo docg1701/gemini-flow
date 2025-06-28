@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "gemini-flow-backend"
+version = "0.1.0"
+description = "Backend for the Planejador Gemini-Flow application"
+authors = ["Jules <jules@example.com>"] # Placeholder author
+readme = "README.md" # Assuming a README might be added later in backend/
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.109.0" # Using a recent version, can be updated
+uvicorn = {extras = ["standard"], version = "^0.27.0"} # Using a recent version
+langchain = "^0.1.0" # Using a recent version
+langchain-google-genai = "^0.0.6" # Using a recent version
+python-decouple = "^3.8"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0" # Example dev dependency
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

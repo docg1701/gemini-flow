@@ -1,0 +1,49 @@
+# Environment variables
+backend/.env
+*.env
+
+# Python cache files and artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+wheels/
+*.egg
+
+# Virtual environment folders
+.venv
+venv
+ENV
+env
+env.bak
+venv.bak
+
+# IDE and editor specific files
+.idea/
+.vscode/
+*.project
+*.tmproj
+*.sublime-workspace
+*.swp
+*.swo
+*~
+*.DS_Store
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pytest cache
+.pytest_cache
+
+# MyPy cache
+.mypy_cache
+
+# Ruff cache
+.ruff_cache
+
+# Coverage reports
+coverage.xml
+.coverage
+htmlcov/

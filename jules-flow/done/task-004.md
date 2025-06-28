@@ -19,18 +19,19 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder, to be filled by platform
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder, to be filled by platform
+# duration_minutes: 0 # Placeholder, to be filled by platform
 # files_modified:
 #   - backend/
 #   - frontend/
 #   - prompts/
-# reference_documents_consulted: []
+# reference_documents_consulted: [] # No specific documents were needed beyond the task description itself.
 # execution_details: |
-#   Diretórios backend, frontend, e prompts criados na raiz do projeto.
+#   Os diretórios `backend/`, `frontend/`, e `prompts/` foram criados com sucesso na raiz do projeto
+#   utilizando o comando `mkdir -p` para garantir idempotência.
 # ---------------------------------------------------------------
 ---
 

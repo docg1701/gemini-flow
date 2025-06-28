@@ -19,21 +19,25 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+# duration_minutes: 0 # Placeholder
 # files_modified:
-#   - prompts/gemini-gem-arquiteto-de-projetos.md
-#   - prompts/gemini-gem-gerente-de-issues.md
-#   - prompts/gemini-gem-super-devops.md
-#   - gemini-gem-arquiteto-de-projetos.md (removido)
-#   - gemini-gem-gerente-de-issues.md (removido)
-#   - gemini-gem-super-devops.md (removido)
+#   - gemini-gem-arquiteto-de-projetos.md # Original path (source of move)
+#   - prompts/gemini-gem-arquiteto-de-projetos.md # New path (destination of move)
+#   - gemini-gem-gerente-de-issues.md # Original path
+#   - prompts/gemini-gem-gerente-de-issues.md # New path
+#   - gemini-gem-super-devops.md # Original path
+#   - prompts/gemini-gem-super-devops.md # New path
 # reference_documents_consulted: []
 # execution_details: |
-#   Arquivos gemini-gem-*.md movidos para o diretório prompts/.
+#   Os seguintes arquivos foram movidos da raiz do projeto para o diretório `prompts/`:
+#   - `gemini-gem-arquiteto-de-projetos.md` -> `prompts/gemini-gem-arquiteto-de-projetos.md`
+#   - `gemini-gem-gerente-de-issues.md` -> `prompts/gemini-gem-gerente-de-issues.md`
+#   - `gemini-gem-super-devops.md` -> `prompts/gemini-gem-super-devops.md`
+#   A operação foi concluída com sucesso.
 # ---------------------------------------------------------------
 ---
 
