@@ -29,10 +29,10 @@
 | task-025     | Testes para a task-007                                  | test          | done        | high       | ["task-007"]                        | Jules     |
 | task-026     | Testes para a task-008                                  | test          | done        | high       | ["task-008"]                        | Jules     |
 | task-027     | Testes para a task-014                                  | test          | done        | high       | ["task-014"]                        | Jules     |
-| task-028     | Testes para a task-017                                  | test          | in_progress | medium     | ["task-017"]                        | Jules     |
+| task-028     | Testes para a task-017                                  | test          | done        | medium     | ["task-017"]                        | Jules     |
 | task-029     | Testes para a task-016                                  | test          | done        | high       | ["task-016"]                        | Jules     |
 | task-030     | Testes para a task-005                                  | test          | backlog | medium     | ["task-005"]                        | Jules     |
-| task-031     | Testes para a task-009 (Máquina de Estados e Orquestrador do Backend) | test          | backlog     | high       | ["task-009"]                        | Jules     |
+| task-031     | Testes para a task-009 (Máquina de Estados e Orquestrador do Backend) | test          | paused_environment | high       | ["task-009"]                        | Jules     |
 | task-032     | Testes para a task-010 (API Principal FastAPI)          | test          | backlog     | high       | ["task-010"]                        | Jules     |
 | task-033     | Testes para a task-018 (Funções de Comunicação API Frontend) | test          | backlog     | high       | ["task-018"]                        | Jules     |
 | task-034     | Testes para a task-015 (Fluxo de Inicialização de Sessão Frontend) | test          | backlog     | high       | ["task-015"]                        | Jules     |
