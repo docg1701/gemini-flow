@@ -10,21 +10,20 @@ sudo apt-get install -y nodejs npm
 sudo npm install -g npx
 sudo apt-get install -y python3-pip
 
-# Criar o arquivo .env no diretório backend se não existir
+# Criar backend/.env com placeholder para GEMINI_API_KEY se não existir
 BACKEND_ENV_FILE="backend/.env"
 if [ ! -f "$BACKEND_ENV_FILE" ]; then
-  echo "Criando arquivo de ambiente em $BACKEND_ENV_FILE..."
-  # Certifique-se de que o diretório backend existe
+  echo "Criando arquivo $BACKEND_ENV_FILE com placeholder para GEMINI_API_KEY..."
+  # Certifique-se de que o diretório backend exista
   mkdir -p backend
-  echo "GEMINI_API_KEY='SUA_CHAVE_API_AQUI_POR_FAVOR_ATUALIZE'" > "$BACKEND_ENV_FILE"
-  echo "Arquivo $BACKEND_ENV_FILE criado com uma chave GEMINI_API_KEY placeholder."
+  echo "GEMINI_API_KEY=YOUR_API_KEY_HERE" > "$BACKEND_ENV_FILE"
+  echo "OPENAI_API_KEY=YOUR_OPENAI_KEY_HERE" >> "$BACKEND_ENV_FILE" # Exemplo se outra chave for necessária
 else
-  # Se o arquivo existe, verificar se GEMINI_API_KEY está presente
+  # Garantir que GEMINI_API_KEY esteja no arquivo se o arquivo já existir mas a chave não
   if ! grep -q "GEMINI_API_KEY" "$BACKEND_ENV_FILE"; then
-    echo "Adicionando GEMINI_API_KEY placeholder ao arquivo $BACKEND_ENV_FILE existente..."
-    echo "GEMINI_API_KEY='SUA_CHAVE_API_AQUI_POR_FAVOR_ATUALIZE'" >> "$BACKEND_ENV_FILE"
-  else
-    echo "GEMINI_API_KEY já parece estar configurada em $BACKEND_ENV_FILE."
+    echo "Adicionando GEMINI_API_KEY placeholder ao $BACKEND_ENV_FILE existente..."
+    echo "" >> "$BACKEND_ENV_FILE" # Nova linha para segurança
+    echo "GEMINI_API_KEY=YOUR_API_KEY_HERE" >> "$BACKEND_ENV_FILE"
   fi
 fi
 
