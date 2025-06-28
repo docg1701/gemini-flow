@@ -10,7 +10,7 @@
 | task-006     | Criar e preencher VISION.md                             | documentation | done        | medium     | []                                  | Jules     |
 | task-007     | Inicializar backend Python com FastAPI e dependências   | development   | done        | high       | ["task-001", "task-004"]            | Jules     |
 | task-008     | Criar módulo de configuração do backend                 | development   | done        | high       | ["task-007"]                        | Jules     |
-| task-009     | Implementar máquina de estados e orquestrador do backend | development   | backlog | high       | ["task-007", "task-008", "task-005"] | Jules     |
+| task-009     | Implementar máquina de estados e orquestrador do backend | development   | paused_environment | high       | ["task-007", "task-008", "task-005"] | Jules     |
 | task-010     | Criar API principal do backend com FastAPI              | development   | backlog | high       | ["task-009"]                        | Jules     |
 | task-011     | Refinar comunicação backend-frontend (/chat endpoint)   | development   | backlog | medium     | ["task-010"]                        | Jules     |
 | task-012     | Implementar lógica do script bootstrap.sh interativo no backend | development   | backlog | medium     | ["task-010"]                        | Jules     |
