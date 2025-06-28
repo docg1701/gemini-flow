@@ -19,7 +19,7 @@
 | task-015     | Criar fluxo de inicialização da sessão no frontend    | development   | backlog | high       | ["task-014", "task-018"]            | Jules     |
 | task-016     | Construir interface principal do chat no frontend       | development   | done        | high       | ["task-014", "task-017"]            | Jules     |
 | task-017     | Gerenciar estado do frontend com React Hooks            | development   | done        | high       | ["task-014"]                        | Jules     |
-| task-018     | Implementar funções de comunicação com API no frontend  | development   | backlog | high       | ["task-014", "task-010"]            | Jules     |
+| task-018     | Implementar funções de comunicação com API no frontend  | development   | done        | high       | ["task-014", "task-010"]            | Jules     |
 | task-019     | Implementar tratamento de erros no frontend             | development   | backlog | medium     | ["task-018", "task-017"]            | Jules     |
 | task-020     | Aplicar estilo visual básico e limpo à aplicação frontend | development   | backlog | low        | ["task-016"]                        | Jules     |
 | task-021     | Criar Dockerfile multi-stage                            | development   | backlog | high       | ["task-003", "task-007", "task-014"] | Jules     |
@@ -34,3 +34,4 @@
 | task-030     | Testes para a task-005                                  | test          | backlog | medium     | ["task-005"]                        | Jules     |
 | task-031     | Testes para a task-009 (Máquina de Estados e Orquestrador do Backend) | test          | backlog     | high       | ["task-009"]                        | Jules     |
 | task-032     | Testes para a task-010 (API Principal FastAPI)          | test          | backlog     | high       | ["task-010"]                        | Jules     |
+| task-033     | Testes para a task-018 (Funções de Comunicação API Frontend) | test          | backlog     | high       | ["task-018"]                        | Jules     |
