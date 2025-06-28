@@ -5,7 +5,9 @@
 # Exemplo:
 # sudo apt-get update
 # sudo apt-get install -y curl git python3-pip
-sudo apt-get update
+# sudo apt-get update
+sudo apt update
+sudo apt full-upgrade
 sudo apt-get install -y nodejs npm
 sudo npm install -g npx
 sudo apt-get install -y python3-pip
@@ -27,4 +29,5 @@ else
   fi
 fi
 
+sudo apt autoremove
 echo "Bootstrap script concluído."
