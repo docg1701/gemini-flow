@@ -46,6 +46,14 @@ else
   echo "AVISO: backend/pyproject.toml não encontrado. Pulando instalação de dependências do backend."
 fi
 
+# Instalar dependências do frontend
+if [ -f "frontend/package.json" ]; then
+  echo "Instalando dependências do frontend definidas em frontend/package.json..."
+  npm install --prefix frontend
+else
+  echo "AVISO: frontend/package.json não encontrado. Pulando instalação de dependências do frontend."
+fi
+
 # Criar backend/.env com placeholder para GEMINI_API_KEY se não existir
 BACKEND_ENV_FILE="backend/.env"
 if [ ! -f "$BACKEND_ENV_FILE" ]; then
