@@ -32,18 +32,33 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+# duration_minutes: 0 # Placeholder
 # files_modified:
 #   - docker-compose.yml
 #   - .env.example
-# reference_documents_consulted: ["docker_research.md"]
+# reference_documents_consulted: ["jules-flow/docs/reference/docker_research.md"]
 # execution_details: |
-#   Arquivo docker-compose.yml criado com definições para os serviços backend e frontend, usando os targets do Dockerfile principal.
-#   Arquivo .env.example criado.
+#   1. Criado o arquivo `.env.example` na raiz do projeto, incluindo `GEMINI_API_KEY` e placeholders para outras possíveis configurações.
+#   2. Criado o arquivo `docker-compose.yml` versão '3.8' na raiz do projeto.
+#   3. Definido o serviço `backend`:
+#      - `build`: context `.`, `Dockerfile`, target `backend`.
+#      - `ports`: "8000:8000".
+#      - `env_file`: `['.env']`.
+#      - `volumes`: `./backend:/app` para hot-reloading.
+#      - `command`: `poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload`.
+#      - `networks`: `['app-network']`.
+#   4. Definido o serviço `frontend`:
+#      - `build`: context `.`, `Dockerfile`, target `frontend`.
+#      - `ports`: "3000:80".
+#      - `depends_on`: `['backend']`.
+#      - `networks`: `['app-network']`.
+#      - Volumes para código não foram incluídos pois o Nginx serve o build estático da imagem.
+#   5. Definida uma rede customizada `app-network` do tipo `bridge`.
+#   6. A configuração segue as orientações da task e do `docker_research.md`.
 # ---------------------------------------------------------------
 ---
 

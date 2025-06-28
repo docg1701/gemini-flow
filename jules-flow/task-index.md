@@ -22,8 +22,8 @@
 | task-018     | Implementar funções de comunicação com API no frontend  | development   | done        | high       | ["task-014", "task-010"]            | Jules     |
 | task-019     | Implementar tratamento de erros no frontend             | development   | backlog | medium     | ["task-018", "task-017"]            | Jules     |
 | task-020     | Aplicar estilo visual básico e limpo à aplicação frontend | development   | backlog | low        | ["task-016"]                        | Jules     |
-| task-021     | Criar Dockerfile multi-stage                            | development   | backlog | high       | ["task-003", "task-007", "task-014"] | Jules     |
-| task-022     | Criar arquivo docker-compose.yml                        | development   | backlog | high       | ["task-021"]                        | Jules     |
+| task-021     | Criar Dockerfile multi-stage                            | development   | done | high       | ["task-003", "task-007", "task-014"] | Jules     |
+| task-022     | Criar arquivo docker-compose.yml                        | development   | done | high       | ["task-021"]                        | Jules     |
 | task-023     | Reescrever README.md principal                          | documentation | backlog | medium     | ["task-021", "task-022"]            | Jules     |
 | task-024     | Testes para a task-004                                  | test          | done        | high       | ["task-004"]                        | Jules     |
 | task-025     | Testes para a task-007                                  | test          | done        | high       | ["task-007"]                        | Jules     |
@@ -36,3 +36,5 @@
 | task-032     | Testes para a task-010 (API Principal FastAPI)          | test          | backlog     | high       | ["task-010"]                        | Jules     |
 | task-033     | Testes para a task-018 (Funções de Comunicação API Frontend) | test          | backlog     | high       | ["task-018"]                        | Jules     |
 | task-034     | Testes para a task-015 (Fluxo de Inicialização de Sessão Frontend) | test          | backlog     | high       | ["task-015"]                        | Jules     |
+| task-035     | Testes para a task-021 (Dockerfile multi-stage)         | test          | backlog     | high       | ["task-021"]                        | Jules     |
+| task-036     | Testes para a task-022 (docker-compose.yml)             | test          | backlog     | high       | ["task-022"]                        | Jules     |
