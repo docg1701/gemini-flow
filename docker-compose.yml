@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # Mount o código do backend para permitir hot-reloading durante o desenvolvimento.
+      # Para produção, o código já está copiado na imagem, então este volume pode ser omitido.
+      - ./backend:/app
+    # O comando para iniciar o servidor uvicorn.
+    # Certifique-se que 'main:app' corresponde ao seu arquivo e instância FastAPI.
+    # O --reload habilita hot-reloading, útil para desenvolvimento.
+    command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    ports:
+      - "3000:80" # Nginx no container roda na porta 80 por padrão
+    depends_on:
+      - backend
+    # Para o frontend servido estaticamente pelo Nginx, não há necessidade de montar volumes de código
+    # uma vez que o build já está copiado para a imagem.
+    # Se estivesse usando um dev server (ex: `npm start` do React), você montaria volumes como:
+    # volumes:
+    #   - ./frontend:/app/frontend
+    #   # Exemplo de comando para dev server, não usado aqui pois usamos build estático com Nginx:
+    #   # command: npm start --prefix /app/frontend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
