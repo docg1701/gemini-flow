@@ -2,9 +2,9 @@
 
 | ID da Tarefa | Título | Tipo | Status | Prioridade | Dependências | Atribuído |
 |--------------|--------|------|--------|------------|--------------|-----------|
-| task-001     | Pesquisa sobre FastAPI para backend                       | research      | backlog | high       | []                                  | Jules     |
-| task-002     | Pesquisa sobre React com TypeScript para frontend         | research      | backlog | high       | []                                  | Jules     |
-| task-003     | Pesquisa sobre Docker e Docker Compose para containerização | research      | backlog | high       | []                                  | Jules     |
+| task-001     | Pesquisa sobre FastAPI para backend                       | research      | done        | high       | []                                  | Jules     |
+| task-002     | Pesquisa sobre React com TypeScript para frontend         | research      | done    | high       | []                                  | Jules     |
+| task-003     | Pesquisa sobre Docker e Docker Compose para containerização | research      | done    | high       | []                                  | Jules     |
 | task-004     | Estabelecer estrutura de diretórios inicial             | development   | backlog | high       | []                                  | Jules     |
 | task-005     | Mover arquivos de prompt para o diretório prompts       | development   | backlog | medium     | ["task-004"]                        | Jules     |
 | task-006     | Criar e preencher VISION.md                             | documentation | backlog | medium     | []                                  | Jules     |
