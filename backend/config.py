@@ -33,5 +33,16 @@ except Exception as e:
 # DEBUG_MODE = _config_instance("DEBUG_MODE", default=False, cast=bool)
 
 # To use in other modules:
-# from backend.config import GEMINI_API_KEY # if using absolute imports from project root
-# print(GEMINI_API_KEY)
+# from backend.config import settings
+# print(settings.GEMINI_API_KEY)
+
+class Settings:
+    def __init__(self):
+        try:
+            self.GEMINI_API_KEY = _config_instance("GEMINI_API_KEY")
+            print(f"[DEBUG config.py] settings.GEMINI_API_KEY loaded via class: {self.GEMINI_API_KEY[:5]}...")
+        except Exception as e:
+            print(f"[DEBUG config.py] Error loading GEMINI_API_KEY into Settings class: {e}")
+            self.GEMINI_API_KEY = None # Default to None or raise error
+
+settings = Settings()

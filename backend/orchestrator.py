@@ -18,7 +18,14 @@ PROMPT_FILES = {
     AppStates.DEVOPS: "gemini-gem-super-devops.md",
 }
 
-PROMPTS_DIR = "prompts"
+# PROMPTS_DIR is relative to the project root directory (where run_tests.sh is, or where main.py is effectively run from)
+# When orchestrator.py is run as `python -m backend.orchestrator` from project root, CWD is project root.
+# When main.py (FastAPI app) runs, and imports orchestrator, PROMPTS_DIR needs to be correct from project root.
+# For tests, if CWD is backend/, then ../prompts is needed.
+# Making it robust by being relative to this file's location.
+_orchestrator_dir = os.path.dirname(os.path.abspath(__file__))
+PROMPTS_DIR = os.path.normpath(os.path.join(_orchestrator_dir, "..", "prompts"))
+
 
 class SessionManager:
     def __init__(self, project_name: str = "Meu Projeto"):
@@ -36,7 +43,9 @@ class SessionManager:
 
         try:
             filepath = os.path.join(PROMPTS_DIR, prompt_filename)
-            with open(filepath, 'r', encoding='utf-8') as f:
+            abs_filepath = os.path.abspath(filepath)
+            print(f"[DEBUG orchestrator._load_prompt_for_state] Trying to load prompt from: {filepath} (abs: {abs_filepath}, CWD: {os.getcwd()})")
+            with open(filepath, 'r', encoding='utf-8') as f: # Corrected encoding
                 self.current_prompt_template = f.read()
         except FileNotFoundError:
             self.current_prompt_template = "Erro: Template de prompt não encontrado."

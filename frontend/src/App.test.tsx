@@ -1,45 +1,116 @@
 import React from 'react';
-import { render, screen }
-from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from './App';
+import { ApiStartResponse } from './services/api'; // Import the type
+
+// Mock the api service
+// The actual orchestrator.process_user_message for "Olá! Vamos começar o planejamento do projeto."
+// will result in a specific simulated message.
+// Let's use that expected structure for the mock.
+const mockProjectName = "Meu Projeto de Teste"; // Consistent with test usage
+const mockInitialMessageFromOrchestrator = `Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'. Estado atual: PLANNING. Prompt ativo: gemini-gem-arquiteto-de-projetos.md. Histórico contém 1 mensagens. (Resposta simulada)`;
+
+jest.mock('./services/api', () => ({
+  // __esModule: true, // Not strictly needed for jest.mock if default export isn't used by component
+  startSession: jest.fn(async (payload: { project_name: string }): Promise<ApiStartResponse> => {
+    // Simulate the structure of ApiStartResponse from backend/main.py
+    // The 'message' field in ApiStartResponse from the /start endpoint
+    // is derived from orchestrator.process_user_message("Olá! Vamos começar o planejamento do projeto.")
+    return Promise.resolve({
+      status: "session_started",
+      project_name: payload.project_name,
+      current_state: "PLANNING", // Default initial state
+      message: mockInitialMessageFromOrchestrator
+    });
+  })
+}));
+
 
 describe('App Component Rendering', () => {
-  beforeEach(() => {
-    render(<App />);
-  });
-
   test('renders the main application title "Planejador Gemini-Flow"', () => {
-    // Check for the main title in the header
+    render(<App />);
     const titleElement = screen.getByRole('heading', { name: /Planejador Gemini-Flow/i, level: 1 });
     expect(titleElement).toBeInTheDocument();
   });
 
-  test('renders PhaseIndicator component with default phase text', () => {
-    // Checks for "Fase Atual:" which is part of PhaseIndicator's structure
-    // and the default initial phase text from App.tsx's state
-    const phaseText = screen.getByText(/Fase Atual: Planejamento Inicial/i);
-    expect(phaseText).toBeInTheDocument();
+  describe('Before session starts', () => {
+    beforeEach(() => {
+      render(<App />);
+    });
+
+    test('renders ProjectNameInput component initially', () => {
+      expect(screen.getByRole('heading', { name: /Start a New Project/i, level: 2 })).toBeInTheDocument();
+      expect(screen.getByLabelText(/Project Name:/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Start Session/i })).toBeInTheDocument();
+    });
+
+    test('does not render chat interface placeholder initially', () => {
+      expect(screen.queryByText(/Chat Interface for:/i)).not.toBeInTheDocument();
+    });
   });
 
-  test('renders ChatWindow component (checking for placeholder text when no messages)', () => {
-    // App.tsx initializes with a system message, so "Nenhuma mensagem ainda..." won't be there initially.
-    // Instead, check for the initial system message.
-    const initialMessage = screen.getByText(/Bem-vindo ao Planejador Gemini-Flow! Projeto: Projeto Exemplo/i);
-    expect(initialMessage).toBeInTheDocument();
-  });
+  describe('After session starts', () => {
+    const testProjectName = "Meu Projeto de Teste";
 
-  test('renders MessageInputBar component (checking for input placeholder and send button)', () => {
-    const inputElement = screen.getByPlaceholderText(/Digite sua mensagem.../i);
-    expect(inputElement).toBeInTheDocument();
-    const sendButton = screen.getByRole('button', { name: /Enviar/i });
-    expect(sendButton).toBeInTheDocument();
-  });
+    beforeEach(async () => {
+      render(<App />);
+      // Simulate starting a session
+      const projectNameInput = screen.getByLabelText(/Project Name:/i);
+      const startSessionButton = screen.getByRole('button', { name: /Start Session/i });
 
-  test('renders ApproveButtonArea component (checking for the approve button)', () => {
-    const approveButton = screen.getByRole('button', { name: /Aprovar Fase/i });
-    expect(approveButton).toBeInTheDocument();
-    // Also check for the helper text when button is likely disabled initially
-    const helperText = screen.getByText(/Aguardando conclusão da IA para aprovar./i);
-    expect(helperText).toBeInTheDocument();
+      await userEvent.type(projectNameInput, testProjectName);
+      await userEvent.click(startSessionButton);
+
+      // App.tsx's handleSessionStarted updates state, which should trigger re-render
+      // The ChatInterfacePlaceholder should now be visible.
+      // We need to wait for the placeholder text to appear.
+      await screen.findByText(`Chat Interface for: ${testProjectName}`);
+    });
+
+    test('renders ChatInterfacePlaceholder after starting a session', async () => {
+      expect(screen.getByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 })).toBeInTheDocument();
+      expect(screen.getByText(`Current State: PLANNING`)).toBeInTheDocument(); // Assuming default state is PLANNING
+      // The initial AI message in the placeholder comes from sessionData.message,
+      // which is "Olá! Vamos começar o planejamento do projeto." from orchestrator.py's process_user_message,
+      // which is wrapped in the placeholder.
+      // The mock for startSession would define this if we were mocking api.ts
+      // For now, App.tsx's handleSessionStarted directly uses the response from ProjectNameInput's onSessionStart.
+      // The placeholder itself shows "Initial AI Message: {sessionData.message}"
+      // Let's assume onSessionStart in App.tsx receives a message like the one defined in the placeholder example.
+      // The actual message will be "Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'..."
+      // due to the current orchestrator simulation.
+      expect(screen.getByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
+      expect(screen.getByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
+    });
+
+    test('ProjectNameInput is no longer visible after session start', () => {
+      expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/Project Name:/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /Start Session/i })).not.toBeInTheDocument();
+    });
+
+    // The old tests for specific components are no longer applicable
+    // as ChatInterfacePlaceholder is shown instead.
+    // These can be reinstated/adapted when task-016 is done.
+
+    // test('renders PhaseIndicator component with default phase text', () => {
+    //   const phaseText = screen.getByText(/Fase Atual: PLANNING/i); // Assuming PLANNING is default
+    //   expect(phaseText).toBeInTheDocument();
+    // });
+
+    // test('renders ChatWindow component with initial message', () => {
+    //   expect(screen.getByText(/Bem-vindo ao Planejador Gemini-Flow! Projeto: Meu Projeto de Teste/i)).toBeInTheDocument();
+    // });
+
+    // test('renders MessageInputBar component', () => {
+    //   expect(screen.getByPlaceholderText(/Digite sua mensagem.../i)).toBeInTheDocument();
+    //   expect(screen.getByRole('button', { name: /Enviar/i })).toBeInTheDocument();
+    // });
+
+    // test('renders ApproveButtonArea component', () => {
+    //   expect(screen.getByRole('button', { name: /Aprovar Fase/i })).toBeInTheDocument();
+    //   expect(screen.getByText(/Aguardando conclusão da IA para aprovar./i)).toBeInTheDocument();
+    // });
   });
 });

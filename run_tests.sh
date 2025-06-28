@@ -74,50 +74,57 @@ if [ -d "${BACKEND_DIR}" ]; then
     # Poetry `run` usually handles this by ensuring the project root is in sys.path.
 
     log_action "Attempting to run backend/orchestrator.py internal tests (if __name__ == '__main__': block)"
-    # Assuming orchestrator.py uses absolute imports like "from backend.config"
-    # Running poetry from the project root is more robust for this.
-    (cd "${PROJECT_ROOT}" && poetry --directory=backend run python backend/orchestrator.py) || log_warning "Execution of orchestrator.py with 'poetry run python backend/orchestrator.py' from project root had issues. Check its output."
+    # Ensuring PROJECT_ROOT is in PYTHONPATH for 'from backend.config' to work, and running as a module
+    (export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" && cd "${PROJECT_ROOT}" && poetry --directory=backend run python -m backend.orchestrator) || log_warning "Execution of backend.orchestrator as module had issues. Check its output."
     log_success "Attempted to run orchestrator.py internal tests."
 
     log_action "Compiling backend/main.py (syntax and top-level imports)"
-    (cd "${PROJECT_ROOT}" && poetry --directory=backend run python -m py_compile backend/main.py) || log_error_exit "Compilation of backend/main.py failed."
+    (cd "${BACKEND_DIR}" && poetry run python -m py_compile main.py) || log_error_exit "Compilation of backend/main.py failed."
     log_success "backend/main.py compiled successfully."
 
     log_action "Compiling backend/config.py (syntax and top-level imports)"
-    (cd "${PROJECT_ROOT}" && poetry --directory=backend run python -m py_compile backend/config.py) || log_error_exit "Compilation of backend/config.py failed."
+    (cd "${BACKEND_DIR}" && poetry run python -m py_compile config.py) || log_error_exit "Compilation of backend/config.py failed."
     log_success "backend/config.py compiled successfully."
 
     log_action "Attempting to start Uvicorn (simulated, to check app load)"
-    # This also requires PROJECT_ROOT in PYTHONPATH for 'from backend...' imports to resolve 'backend'.
-    # The PYTHONPATH export before this command is crucial.
-    # We are in BACKEND_DIR, so to refer to backend.main:app, Uvicorn needs to see the 'backend' package.
-    # Safest is to run uvicorn from project root.
-    (export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" && cd "${PROJECT_ROOT}" && poetry --directory=backend run uvicorn backend.main:app --host 0.0.0.0 --port 8000 --lifespan off --timeout-graceful-shutdown 1 &)
+    cd "${PROJECT_ROOT}" # Ensure we are in project root for consistent pathing
+    export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" # Ensure backend module is findable
+
+    log_action "Ensuring port 8000 is free..."
+    # Attempt to kill any process listening on port 8000
+    sudo kill $(sudo lsof -t -i:8000) 2>/dev/null || true
+
+    log_action "Starting Uvicorn server in background..."
+    poetry --directory=backend run uvicorn backend.main:app --host 0.0.0.0 --port 8000 --lifespan off --timeout-graceful-shutdown 1 &
     UVICORN_PID=$!
-    log_action "Uvicorn started with PID ${UVICORN_PID} in background (attempting for a few seconds)."
+    cd "${PROJECT_ROOT}" # Return to project root (though already there)
+
+    log_action "Uvicorn potentially started with PID ${UVICORN_PID}. Waiting a few seconds..."
     sleep 5 # Give uvicorn a moment to start or fail
 
-    if ps -p ${UVICORN_PID} > /dev/null; then
-       log_success "Uvicorn process seems to be running (PID: ${UVICORN_PID})."
-       log_action "Attempting basic health check with curl"
-       curl -f http://localhost:8000/health || log_warning "Health check failed or Uvicorn not fully up."
+    if [ -n "${UVICORN_PID}" ] && ps -p "${UVICORN_PID}" > /dev/null; then
+       log_success "Uvicorn process (PID: ${UVICORN_PID}) is running."
+       log_action "Attempting basic health check with curl to http://localhost:8000/health"
+       if curl -fsS http://localhost:8000/health > /dev/null; then
+           log_success "Health check successful."
+       else
+           log_warning "Health check FAILED. Uvicorn might not be fully responsive or an error occurred."
+       fi
        log_action "Stopping Uvicorn process (PID: ${UVICORN_PID})."
-       kill ${UVICORN_PID}
-       wait ${UVICORN_PID} 2>/dev/null # Suppress "Terminated" message
+       kill "${UVICORN_PID}"
+       wait "${UVICORN_PID}" 2>/dev/null # Suppress "Terminated" message
        log_success "Uvicorn stopped."
     else
-       log_warning "Uvicorn process (PID: ${UVICORN_PID}) did not start or exited quickly. Check for errors above if Uvicorn tried to print them."
+       log_warning "Uvicorn process (PID: ${UVICORN_PID}) did not start correctly or exited prematurely. Check logs if available."
        # Attempt to capture any output if uvicorn wrote to a file or if logs are available
     fi
+    # Ensure PYTHONPATH is reset or managed if it causes issues for subsequent non-Python tasks.
+    # For this script, it's likely fine as frontend tests use npm in their own directory.
 
-    # Placeholder for actual PyTest execution
-    log_action "Placeholder for backend PyTest tests (e.g., task-031, task-032)"
-    # if [ -d "tests" ]; then # Assuming tests are in backend/tests
-    #    poetry run pytest tests/ || log_warning "PyTest backend tests failed or had issues."
-    #    log_success "PyTest backend tests executed."
-    # else
-    #    log_warning "Backend 'tests' directory not found relative to $(pwd). Skipping PyTest."
-    # fi
+    log_action "Running backend PyTest tests"
+    # Running pytest from backend directory, with PROJECT_ROOT in PYTHONPATH for 'from backend.xxx' imports in tests
+    (export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" && cd "${BACKEND_DIR}" && poetry run pytest tests/) || log_warning "PyTest backend tests failed or had issues."
+    log_success "PyTest backend tests executed."
 
     log_action "Returning to project root: ${PROJECT_ROOT}"
     cd "${PROJECT_ROOT}" || log_error_exit "Failed to cd back to project root from backend."
@@ -148,12 +155,10 @@ if [ -d "${FRONTEND_DIR}" ]; then
     npm run build || log_error_exit "npm run build failed for frontend."
     log_success "Frontend build completed successfully."
 
-    # Placeholder for actual Jest test execution
-    log_action "Placeholder for frontend Jest tests (e.g., task-033, task-034)"
-    # log_action "Running frontend Jest tests (npm test)"
-    # npm test -- --watchAll=false --passWithNoTests || log_warning "Frontend Jest tests failed or had issues."
-    # # --passWithNoTests is useful if no test files are created yet
-    # log_success "Frontend Jest tests executed."
+    log_action "Running frontend Jest tests (npm test)"
+    npm test -- --watchAll=false --passWithNoTests || log_warning "Frontend Jest tests failed or had issues."
+    # --passWithNoTests is useful if no test files are created yet
+    log_success "Frontend Jest tests executed."
 
     log_action "Returning to project root: ${PROJECT_ROOT}"
     cd "${PROJECT_ROOT}" || log_error_exit "Failed to cd back to project root from frontend."

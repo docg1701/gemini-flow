@@ -1,20 +1,35 @@
 #!/bin/bash
+set -e
+# set -o pipefail # Removed as it may not be supported in all sh environments
+
+export DEBIAN_FRONTEND=noninteractive
+
 # Script de bootstrap para o ambiente de Jules
 # Adicione aqui os comandos para instalar dependências de sistema
 
 # Exemplo:
-# sudo apt-get update
-# sudo apt-get install -y curl git python3-pip
-# sudo apt-get update
-sudo apt -y update
-sudo apt -y full-upgrade
-sudo apt-get install -y nodejs npm
-sudo npm install -g npx
-sudo apt-get install -y python3-pip python3-venv
+# sudo apt-get -y -q update
+# sudo apt-get -y -q install curl git python3-pip
+
+echo "Atualizando lista de pacotes e fazendo upgrade do sistema..."
+sudo apt-get -y -q update
+sudo apt-get -y -q full-upgrade
+
+echo "Instalando Node.js, npm, Python pip e venv..."
+sudo apt-get -y -q install nodejs npm
+# sudo npm install -g npx # Removido conforme plano
+sudo apt-get -y -q install python3-pip python3-venv
 
 # Instalar Poetry (gerenciador de dependências Python)
 echo "Instalando Poetry..."
-python3 -m pip install --user poetry
+# python3 -m pip install --user poetry # Será substituído pelo método oficial
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Adicionar/atualizar multidict para uma versão segura antes de instalar todas as dependências
+if [ -f "backend/pyproject.toml" ]; then
+  echo "Garantindo que multidict seja uma versão segura (<6.6.0)..."
+  ~/.local/bin/poetry -C backend add "multidict<6.6.0"
+fi
 
 # Instalar dependências do backend com Poetry
 if [ -f "backend/pyproject.toml" ]; then
@@ -48,5 +63,6 @@ else
   fi
 fi
 
-sudo apt -y autoremove
+echo "Removendo pacotes não mais necessários..."
+sudo apt-get -y -q autoremove
 echo "Bootstrap script concluído."
