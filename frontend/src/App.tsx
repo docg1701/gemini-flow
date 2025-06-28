@@ -25,7 +25,7 @@ const ChatInterfacePlaceholder: React.FC<{ sessionData: ApiStartResponse }> = ({
 
 function App() {
   const [sessionData, setSessionData] = useState<ApiStartResponse | null>(null);
-  const [appIsLoading, setAppIsLoading] = useState<boolean>(false); // For the /start API call
+  // const [appIsLoading, setAppIsLoading] = useState<boolean>(false); // Removed as it's unused
   const [appError, setAppError] = useState<string | null>(null);
 
   const handleSessionStarted = (data: ApiStartResponse) => {
@@ -40,9 +40,10 @@ function App() {
   // and will manage its own internal isLoading/error for the API call itself.
   // App.tsx can also have its own global loading/error for the transition.
 
-  if (appIsLoading) { // This global loading could be for initial app load, not used yet
-    return <div className="App"><p>Loading application...</p></div>;
-  }
+  // Removed appIsLoading condition as the variable was removed.
+  // if (appIsLoading) {
+  //   return <div className="App"><p>Loading application...</p></div>;
+  // }
 
   return (
     <div className="App">
