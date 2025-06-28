@@ -33,7 +33,7 @@
 | task-029     | Testes para a task-016                                  | test          | done        | high       | ["task-016"]                        | Jules     |
 | task-030     | Testes para a task-005                                  | test          | backlog | medium     | ["task-005"]                        | Jules     |
 | task-031     | Testes para a task-009 (Máquina de Estados e Orquestrador do Backend) | test          | paused_environment | high       | ["task-009"]                        | Jules     |
-| task-032     | Testes para a task-010 (API Principal FastAPI)          | test          | backlog     | high       | ["task-010"]                        | Jules     |
+| task-032     | Testes para a task-010 (API Principal FastAPI)          | test          | done        | high       | ["task-010"]                        | Jules     |
 | task-033     | Testes para a task-018 (Funções de Comunicação API Frontend) | test          | backlog     | high       | ["task-018"]                        | Jules     |
 | task-034     | Testes para a task-015 (Fluxo de Inicialização de Sessão Frontend) | test          | backlog     | high       | ["task-015"]                        | Jules     |
 | task-035     | Testes para a task-021 (Dockerfile multi-stage)         | test          | backlog     | high       | ["task-021"]                        | Jules     |

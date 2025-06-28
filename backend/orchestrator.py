@@ -43,8 +43,8 @@ class SessionManager:
 
         try:
             filepath = os.path.join(PROMPTS_DIR, prompt_filename)
-            abs_filepath = os.path.abspath(filepath)
-            print(f"[DEBUG orchestrator._load_prompt_for_state] Trying to load prompt from: {filepath} (abs: {abs_filepath}, CWD: {os.getcwd()})")
+            # abs_filepath = os.path.abspath(filepath) # Debug line
+            # print(f"[DEBUG orchestrator._load_prompt_for_state] Trying to load prompt from: {filepath} (abs: {abs_filepath}, CWD: {os.getcwd()})") # Debug line
             with open(filepath, 'r', encoding='utf-8') as f: # Corrected encoding
                 self.current_prompt_template = f.read()
         except FileNotFoundError:
