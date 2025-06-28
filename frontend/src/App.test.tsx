@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react'; // Import act
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import { ApiStartResponse } from './services/api'; // Import the type
@@ -53,39 +53,46 @@ describe('App Component Rendering', () => {
   describe('After session starts', () => {
     const testProjectName = "Meu Projeto de Teste";
 
-    beforeEach(async () => {
+    // Removed beforeEach for this block to consolidate into a single test case for clarity.
+
+    test('renders ChatInterfacePlaceholder and hides ProjectNameInput after starting a session', async () => {
+      const mockApi = require('./services/api');
+      mockApi.startSession.mockClear(); // Clear for this specific test, as it's self-contained.
+
       render(<App />);
-      // Simulate starting a session
       const projectNameInput = screen.getByLabelText(/Project Name:/i);
       const startSessionButton = screen.getByRole('button', { name: /Start Session/i });
 
+      // Perform actions
       await userEvent.type(projectNameInput, testProjectName);
-      await userEvent.click(startSessionButton);
+      await userEvent.click(startSessionButton); // Await the click
 
-      // App.tsx's handleSessionStarted updates state, which should trigger re-render
-      // The ChatInterfacePlaceholder should now be visible.
-      // We need to wait for the placeholder text to appear.
-      await screen.findByText(`Chat Interface for: ${testProjectName}`);
-    });
+      // Wait for mock and DOM updates
+      // Ensure the mock was called as expected from the click action.
+      await userEvent.click(startSessionButton); // Await the click
 
-    test('renders ChatInterfacePlaceholder after starting a session', async () => {
-      expect(screen.getByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 })).toBeInTheDocument();
-      expect(screen.getByText(`Current State: PLANNING`)).toBeInTheDocument(); // Assuming default state is PLANNING
-      // The initial AI message in the placeholder comes from sessionData.message,
-      // which is "Olá! Vamos começar o planejamento do projeto." from orchestrator.py's process_user_message,
-      // which is wrapped in the placeholder.
-      // The mock for startSession would define this if we were mocking api.ts
-      // For now, App.tsx's handleSessionStarted directly uses the response from ProjectNameInput's onSessionStart.
-      // The placeholder itself shows "Initial AI Message: {sessionData.message}"
-      // Let's assume onSessionStart in App.tsx receives a message like the one defined in the placeholder example.
-      // The actual message will be "Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'..."
-      // due to the current orchestrator simulation.
-      expect(screen.getByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
-      expect(screen.getByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
-    });
+      // After the click, explicitly wait for all promises to resolve and state updates to flush.
+      // This await act() with a microtask flush is a common pattern for stubborn async updates.
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 0)); // Flush microtasks/timers
+      });
 
-    test('ProjectNameInput is no longer visible after session start', () => {
-      expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
+      // Now, check assertions
+      await waitFor(() => expect(mockApi.startSession).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName }));
+
+      await waitFor(() => {
+        expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
+      }, { timeout: 2000 }); // Give it a bit more time if needed
+
+      const heading = await screen.findByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 });
+      expect(heading).toBeInTheDocument();
+
+      expect(await screen.findByText(`Current State: PLANNING`)).toBeInTheDocument();
+      expect(await screen.findByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
+      expect(await screen.findByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
+
+      // Final check that ProjectNameInput elements are definitely gone
       expect(screen.queryByLabelText(/Project Name:/i)).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /Start Session/i })).not.toBeInTheDocument();
     });
