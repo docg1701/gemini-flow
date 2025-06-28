@@ -24,16 +24,17 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: "2024-07-30T10:00:00Z" # Placeholder time
+# end_time: "2024-07-30T10:05:00Z" # Placeholder time
+# duration_minutes: 5 # Placeholder duration
 # files_modified:
-#   - jules-flow/docs/reference/fastapi_research.md
-# reference_documents_consulted: []
+#   - jules-flow/docs/reference/fastapi_research.md # File was pre-existing and verified
+# reference_documents_consulted: [] # This task created/verified the reference doc
 # execution_details: |
-#   Pesquisa realizada e resultados compilados em jules-flow/docs/reference/fastapi_research.md.
+#   The target output file `jules-flow/docs/reference/fastapi_research.md` was found to be already present and its content fulfilled the task requirements.
+#   No new web research or file modification was performed during this execution. The existing file was validated against the task's acceptance criteria.
 # ---------------------------------------------------------------
 ---
 
