@@ -51,10 +51,9 @@ def test_generate_files_endpoint_success(test_output_dir, monkeypatch):
     Tests the /generate_files endpoint for successful file generation
     after reaching the DEVOPS state.
     """
-    # Monkeypatch the base_output_dir in file_generator.py to use our test_output_dir
+    # Set the environment variable that file_generator.py will use for the output directory
     # This ensures generated files go into the fixture-controlled directory.
-    # The `test_output_dir` fixture provides the path `backend/tests/test_output_gen_files`
-    monkeypatch.setattr("backend.file_generator.BASE_OUTPUT_DIR_FOR_TESTS", test_output_dir)
+    monkeypatch.setenv("JULES_TEST_OUTPUT_DIR", test_output_dir)
 
     project_name = "test_project_bootstrap_success"
 
@@ -121,7 +120,7 @@ def test_bootstrap_script_content_and_permissions(test_output_dir, monkeypatch):
     """
     Tests the content and permissions of the generated bootstrap.sh script.
     """
-    monkeypatch.setattr("backend.file_generator.BASE_OUTPUT_DIR_FOR_TESTS", test_output_dir)
+    monkeypatch.setenv("JULES_TEST_OUTPUT_DIR", test_output_dir)
 
     project_name = "test_project_bootstrap_content"
 
@@ -171,7 +170,7 @@ def test_generate_files_endpoint_not_in_devops_state(test_output_dir, monkeypatc
     Tests that /generate_files endpoint returns 'not_ready_for_generation'
     if the session is not in DEVOPS state.
     """
-    monkeypatch.setattr("backend.file_generator.BASE_OUTPUT_DIR_FOR_TESTS", test_output_dir)
+    monkeypatch.setenv("JULES_TEST_OUTPUT_DIR", test_output_dir)
     project_name = "test_project_not_devops"
 
     # 1. Start session (state will be PLANNING)
@@ -239,7 +238,7 @@ def test_generate_files_no_active_session(test_output_dir, monkeypatch):
     Tests that /generate_files endpoint returns a 400 error if no session is active.
     """
     # Ensure that any test-specific output base dir is set, though it shouldn't be used
-    monkeypatch.setattr("backend.file_generator.BASE_OUTPUT_DIR_FOR_TESTS", test_output_dir)
+    monkeypatch.setenv("JULES_TEST_OUTPUT_DIR", test_output_dir)
 
     # To simulate "no active session", we can try to reset the session in the global orchestrator
     # This is a bit invasive but necessary if the orchestrator is a global instance.
