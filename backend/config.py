@@ -1,18 +1,21 @@
 import os
 from decouple import Config, RepositoryEnv, config as default_config_loader
 
-# Construct the path to the .env file located in the same directory as this config.py
-# __file__ is the path to config.py itself. os.path.dirname(__file__) is its directory.
-_current_dir = os.path.dirname(os.path.abspath(__file__)) # Use abspath for robustness
-_env_file_path = os.path.join(_current_dir, '.env')
+# Construct the path to the .env file located in the project root directory
+# __file__ is the path to config.py. os.path.dirname(__file__) is its directory (backend/).
+# os.path.dirname(os.path.dirname(__file__)) should be the project root.
+_backend_dir = os.path.dirname(os.path.abspath(__file__)) # Absolute path to backend/
+_project_root_dir = os.path.dirname(_backend_dir) # Absolute path to project root
+_env_file_path_in_root = os.path.join(_project_root_dir, '.env')
 
-# Create a specific config instance that loads from the .env file in this directory
-if os.path.exists(_env_file_path):
-    # If .env exists, prioritize it.
-    _config_instance = Config(RepositoryEnv(_env_file_path))
+# Create a specific config instance that loads from the .env file in the project root
+if os.path.exists(_env_file_path_in_root):
+    # If .env exists in project root, prioritize it.
+    _config_instance = Config(RepositoryEnv(_env_file_path_in_root))
 else:
-    # If .env file does not exist next to config.py, fall back to default python-decouple behavior
-    # (which checks CWD, parent dirs for .env/.ini and then environment variables).
+    # If .env file does not exist in project root, fall back to default python-decouple behavior
+    # (which checks CWD, parent dirs for .env/.ini and then environment variables,
+    # and importantly, environment variables themselves).
     _config_instance = default_config_loader
 
 # Now use this specific config instance to load variables

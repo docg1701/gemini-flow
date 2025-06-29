@@ -2,7 +2,7 @@
 id: task-043
 title: "Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker)"
 type: fix
-status: backlog
+status: backlog # Atualizado para backlog ao mover
 priority: high
 dependencies: ["task-034", "task-036", "task-038", "task-042"] # Referencing the failed tasks
 parent_plan_objective_id: null # This is a corrective task for multiple issues
@@ -10,7 +10,7 @@ discovered_research_needed: []
 assigned_to: Jules
 created_by: Jules
 created_at: 2024-07-31T17:00:00Z # Placeholder time
-updated_at: 2024-07-31T17:00:00Z # Placeholder time
+updated_at: # Será atualizado pela plataforma ou por Jules ao retomar
 tags: ["frontend", "backend", "test", "fix", "docker", "react", "python"]
 description: |
   Esta tarefa visa corrigir duas categorias principais de falhas identificadas:
@@ -55,6 +55,7 @@ description: |
 #   - backend/main.py
 # execution_details: |
 #   # Log detalhado das ações tomadas, decisões, e resultados parciais.
+#   # Tarefa pausada para priorizar task-044 (Revisão de Configuração de Containerização).
 # ---------------------------------------------------------------
 ---
 
