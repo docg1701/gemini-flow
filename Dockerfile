@@ -8,8 +8,8 @@ ARG APP_USER=appuser
 ARG APP_GROUP=appgroup
 
 # --- Labels Comuns ---
-LABEL maintainer="Jules <jules@example.com>"
-LABEL description="Aplicação Gemini-Flow (Backend Python/FastAPI e Frontend React/Nginx)"
+#LABEL maintainer="Jules <jules@example.com>"
+#LABEL description="Aplicação Gemini-Flow (Backend Python/FastAPI e Frontend React/Nginx)"
 
 # ==============================================================================
 # Frontend Build Stage
@@ -30,8 +30,8 @@ RUN npm run build
 # ==============================================================================
 # Backend Stage (Renomeado)
 # ==============================================================================
-FROM python:${PYTHON_VERSION} AS backend_app # RENOMEADO AQUI
-LABEL stage="backend_app" # RENOMEADO AQUI
+FROM python:${PYTHON_VERSION} AS backend_app
+LABEL stage="backend_app"
 
 ARG APP_USER
 ARG APP_GROUP
@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --no-dev --no-root
+    && poetry install --no-interaction --no-ansi --no-root
 
 COPY backend/ ./
 RUN chown -R ${APP_USER}:${APP_GROUP} /app

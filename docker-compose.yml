@@ -1,9 +1,9 @@
 services:
-  backend: # Nome do serviço permanece 'backend'
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-      target: backend_app # RENOMEADO AQUI para corresponder ao AS no Dockerfile
+      target: backend_app
       # args: # COMENTADO PARA TESTE
       #   PYTHON_VERSION: ${DOCKER_PYTHON_VERSION}
       #   APP_USER: ${BACKEND_APP_USER}
@@ -28,14 +28,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: frontend # Este permanece o mesmo
+      target: frontend
       args:
         NODE_VERSION: ${DOCKER_NODE_VERSION}
         NGINX_VERSION: ${DOCKER_NGINX_VERSION}
     ports:
       - "${FRONTEND_HOST_PORT}:${NGINX_CONTAINER_PORT}"
     depends_on:
-      backend: # A dependência é no nome do serviço, não no target do build
+      backend:
         condition: service_healthy
     networks:
       - app-network
