@@ -1,5 +1,9 @@
 import datetime
 import os
+from typing import Optional
+
+# This global can be monkeypatched by tests to redirect output
+BASE_OUTPUT_DIR_FOR_TESTS: Optional[str] = None
 
 def generate_bootstrap_script(project_name: str) -> str:
     script_content = f"""#!/bin/bash
@@ -71,12 +75,14 @@ def create_project_structure_and_files(project_name: str, base_output_dir: str =
     Cria a estrutura de diretórios base para o projeto gerado e salva o bootstrap.sh.
     Retorna o caminho para o diretório do projeto gerado.
     """
+    current_base_output_dir = BASE_OUTPUT_DIR_FOR_TESTS if BASE_OUTPUT_DIR_FOR_TESTS is not None else base_output_dir
+
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     # Sanitize project_name for directory path
     sanitized_project_name = "".join(c if c.isalnum() or c in (' ', '_', '-') else '_' for c in project_name)
     sanitized_project_name = sanitized_project_name.lower().replace(' ', '_')
 
-    project_output_dir = os.path.join(base_output_dir, f"{sanitized_project_name}_{timestamp}")
+    project_output_dir = os.path.join(current_base_output_dir, f"{sanitized_project_name}_{timestamp}")
 
     os.makedirs(project_output_dir, exist_ok=True)
 
