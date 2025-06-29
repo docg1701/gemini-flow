@@ -45,7 +45,8 @@ RUN groupadd -r ${APP_GROUP} && useradd --no-log-init -r -g ${APP_GROUP} -d /app
 COPY backend/pyproject.toml backend/poetry.lock ./
 
 ENV POETRY_HOME="/opt/poetry"
-ENV POETRY_CACHE_DIR="/app/.cache/poetry" # Tenta forçar o cache para dentro do /app
+# Tenta forçar o cache para dentro do /app
+ENV POETRY_CACHE_DIR="/app/.cache/poetry"
 ENV PATH="$POETRY_HOME/bin:$PATH"
 
 # Instala o Poetry e configura
@@ -54,23 +55,27 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false \
     # && poetry config virtualenvs.in-project true # Removido por enquanto, pois virtualenvs.create é false
-    && mkdir -p /app/.cache/poetry \ # Cria o diretório de cache explicitamente
-    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_HOME" # Garante que /app e POETRY_HOME são do appuser
-    # ^ Movido chown para ANTES do poetry install para arquivos de config do poetry
+    # Cria o diretório de cache explicitamente
+    && mkdir -p /app/.cache/poetry \
+    # Garante que /app e POETRY_HOME são do appuser
+    # Movido chown para ANTES do poetry install para arquivos de config do poetry
     # e também para o POETRY_HOME caso o Poetry escreva config globalmente.
+    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_HOME"
 
-USER ${APP_USER} # Mudar para appuser ANTES de rodar poetry install
+# Mudar para appuser ANTES de rodar poetry install
+USER ${APP_USER}
 
+# poetry install agora roda como appuser
 RUN poetry install --no-interaction --no-ansi --no-root
-# ^ poetry install agora roda como appuser
 
 COPY backend/ ./
-# RUN chown -R ${APP_USER}:${APP_GROUP} /app # Este chown pode não ser mais necessário aqui se o anterior cobrir tudo,
-                                          # ou pode ser mantido para garantir que os arquivos copiados também tenham o dono certo.
-                                          # Vamos manter por segurança.
+# Este chown pode não ser mais necessário aqui se o anterior cobrir tudo,
+# ou pode ser mantido para garantir que os arquivos copiados também tenham o dono certo.
+# Vamos manter por segurança.
 RUN chown -R ${APP_USER}:${APP_GROUP} /app
 
-# USER ${APP_USER} # Já definido
+# Já definido
+# USER ${APP_USER}
 
 # ==============================================================================
 # Frontend Runtime Stage (Nginx)
