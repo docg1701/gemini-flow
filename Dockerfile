@@ -38,44 +38,48 @@ ARG APP_GROUP
 
 WORKDIR /app
 
+# 1. Operações como root: Criar usuário/grupo
 RUN groupadd -r ${APP_GROUP} && useradd --no-log-init -r -g ${APP_GROUP} -d /app -s /bin/bash ${APP_USER}
-# ^ Adicionado -d /app para definir o home directory do appuser como /app
-# ^ Adicionado -s /bin/bash para um shell padrão (boa prática)
 
+# Copiar arquivos de dependência do Poetry
 COPY backend/pyproject.toml backend/poetry.lock ./
 
+# Configurar ENVs do Poetry
 ENV POETRY_HOME="/opt/poetry"
-# Tenta forçar o cache para dentro do /app
 ENV POETRY_CACHE_DIR="/app/.cache/poetry"
 ENV PATH="$POETRY_HOME/bin:$PATH"
 
-# Instala o Poetry e configura
+# Instalar dependências de sistema, Poetry, e configurar Poetry (ainda como root)
 RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false \
-    # && poetry config virtualenvs.in-project true # Removido por enquanto, pois virtualenvs.create é false
-    # Cria o diretório de cache explicitamente
-    && mkdir -p /app/.cache/poetry \
-    # Garante que /app e POETRY_HOME são do appuser
-    # Movido chown para ANTES do poetry install para arquivos de config do poetry
-    # e também para o POETRY_HOME caso o Poetry escreva config globalmente.
-    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_HOME"
+    && mkdir -p "$POETRY_CACHE_DIR" \
+    # Chown inicial para o diretório de trabalho e cache do poetry para appuser
+    # Isso é feito antes do poetry install, mas poetry install ainda roda como root nesta versão
+    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_CACHE_DIR" "$POETRY_HOME"
 
-# Mudar para appuser ANTES de rodar poetry install
-USER ${APP_USER}
-
-# poetry install agora roda como appuser
+# Instalar dependências do projeto COMO ROOT.
+# Poetry vai instalar os pacotes em um local do sistema que o appuser poderá ler.
 RUN poetry install --no-interaction --no-ansi --no-root
 
+# Copia o restante dos arquivos da aplicação COMO ROOT
 COPY backend/ ./
-# Este chown pode não ser mais necessário aqui se o anterior cobrir tudo,
-# ou pode ser mantido para garantir que os arquivos copiados também tenham o dono certo.
-# Vamos manter por segurança.
+
+# -- DEBUGGING --
+RUN echo "--- DEBUG: Verificando usuário antes do chown final (deve ser root) ---" && whoami
+RUN echo "--- DEBUG: Listando /app antes do chown final ---" && ls -la /app
+# -- END DEBUGGING --
+
+# Chown final de tudo em /app para appuser, EXECUTADO COMO ROOT
 RUN chown -R ${APP_USER}:${APP_GROUP} /app
 
-# Já definido
-# USER ${APP_USER}
+# Mudar para appuser para a execução do container (final)
+USER ${APP_USER}
+
+# O comando no docker-compose.yml (poetry run uvicorn...) será executado como appuser.
+# O appuser agora é dono de /app e seu conteúdo.
+# As dependências foram instaladas globalmente pelo root, mas são acessíveis.
 
 # ==============================================================================
 # Frontend Runtime Stage (Nginx)
