@@ -38,21 +38,39 @@ ARG APP_GROUP
 
 WORKDIR /app
 
-RUN groupadd -r ${APP_GROUP} && useradd --no-log-init -r -g ${APP_GROUP} ${APP_USER}
+RUN groupadd -r ${APP_GROUP} && useradd --no-log-init -r -g ${APP_GROUP} -d /app -s /bin/bash ${APP_USER}
+# ^ Adicionado -d /app para definir o home directory do appuser como /app
+# ^ Adicionado -s /bin/bash para um shell padrão (boa prática)
 
 COPY backend/pyproject.toml backend/poetry.lock ./
 
 ENV POETRY_HOME="/opt/poetry"
+ENV POETRY_CACHE_DIR="/app/.cache/poetry" # Tenta forçar o cache para dentro do /app
 ENV PATH="$POETRY_HOME/bin:$PATH"
+
+# Instala o Poetry e configura
 RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --no-root
+    # && poetry config virtualenvs.in-project true # Removido por enquanto, pois virtualenvs.create é false
+    && mkdir -p /app/.cache/poetry \ # Cria o diretório de cache explicitamente
+    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_HOME" # Garante que /app e POETRY_HOME são do appuser
+    # ^ Movido chown para ANTES do poetry install para arquivos de config do poetry
+    # e também para o POETRY_HOME caso o Poetry escreva config globalmente.
+
+USER ${APP_USER} # Mudar para appuser ANTES de rodar poetry install
+
+RUN poetry install --no-interaction --no-ansi --no-root
+# ^ poetry install agora roda como appuser
 
 COPY backend/ ./
+# RUN chown -R ${APP_USER}:${APP_GROUP} /app # Este chown pode não ser mais necessário aqui se o anterior cobrir tudo,
+                                          # ou pode ser mantido para garantir que os arquivos copiados também tenham o dono certo.
+                                          # Vamos manter por segurança.
 RUN chown -R ${APP_USER}:${APP_GROUP} /app
-USER ${APP_USER}
+
+# USER ${APP_USER} # Já definido
 
 # ==============================================================================
 # Frontend Runtime Stage (Nginx)
