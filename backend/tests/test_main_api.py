@@ -163,7 +163,7 @@ def test_generate_files_ready():
     response = client.post("/generate_files")
     assert response.status_code == 200
     json_response = response.json()
-    assert json_response["status"] == "files_generated_successfully_simulated"
+    assert json_response["status"] == "files_generated_successfully"
     assert project_name in json_response["message"]
 
 # More tests could be added:
