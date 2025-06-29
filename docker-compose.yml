@@ -1,44 +1,50 @@
-version: '3.8'
-
 services:
-  backend:
+  backend: # Nome do serviço permanece 'backend'
     build:
       context: .
       dockerfile: Dockerfile
-      target: backend
+      target: backend_app # RENOMEADO AQUI para corresponder ao AS no Dockerfile
+      # args: # COMENTADO PARA TESTE
+      #   PYTHON_VERSION: ${DOCKER_PYTHON_VERSION}
+      #   APP_USER: ${BACKEND_APP_USER}
+      #   APP_GROUP: ${BACKEND_APP_GROUP}
     ports:
-      - "8000:8000"
-    env_file:
-      - .env
+      - "${BACKEND_HOST_PORT}:${BACKEND_CONTAINER_PORT}"
+    # env_file: # COMENTADO PARA TESTE
+    #   - ./.env
     volumes:
-      # Mount o código do backend para permitir hot-reloading durante o desenvolvimento.
-      # Para produção, o código já está copiado na imagem, então este volume pode ser omitido.
       - ./backend:/app
-    # O comando para iniciar o servidor uvicorn.
-    # Certifique-se que 'main:app' corresponde ao seu arquivo e instância FastAPI.
-    # O --reload habilita hot-reloading, útil para desenvolvimento.
-    command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: poetry run uvicorn main:app --host 0.0.0.0 --port ${BACKEND_CONTAINER_PORT} --reload --reload-dir /app
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${BACKEND_CONTAINER_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
-      target: frontend
+      target: frontend # Este permanece o mesmo
+      args:
+        NODE_VERSION: ${DOCKER_NODE_VERSION}
+        NGINX_VERSION: ${DOCKER_NGINX_VERSION}
     ports:
-      - "3000:80" # Nginx no container roda na porta 80 por padrão
+      - "${FRONTEND_HOST_PORT}:${NGINX_CONTAINER_PORT}"
     depends_on:
-      - backend
-    # Para o frontend servido estaticamente pelo Nginx, não há necessidade de montar volumes de código
-    # uma vez que o build já está copiado para a imagem.
-    # Se estivesse usando um dev server (ex: `npm start` do React), você montaria volumes como:
-    # volumes:
-    #   - ./frontend:/app/frontend
-    #   # Exemplo de comando para dev server, não usado aqui pois usamos build estático com Nginx:
-    #   # command: npm start --prefix /app/frontend
+      backend: # A dependência é no nome do serviço, não no target do build
+        condition: service_healthy
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${NGINX_CONTAINER_PORT}/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 networks:
   app-network:

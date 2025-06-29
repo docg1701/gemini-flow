@@ -1,6 +1,10 @@
 # Environment variables
-backend/.env
-*.env
+# Ignore all .env files to prevent committing secrets
+**/.env
+
+# Explicitly un-ignore .env.example files as they are templates
+!.env.example
+# Add other !.env.*.example if you have more example types
 
 # Python cache files and artifacts
 __pycache__/

@@ -12,7 +12,7 @@
 | task-008     | Criar módulo de configuração do backend                 | development   | done        | high       | ["task-007"]                        | Jules     |
 | task-009     | Implementar máquina de estados e orquestrador do backend | development   | done        | high       | ["task-007", "task-008", "task-005"] | Jules     |
 | task-010     | Criar API principal do backend com FastAPI              | development   | done        | high       | ["task-009"]                        | Jules     |
-| task-011     | Refinar comunicação backend-frontend (/chat endpoint)   | development   | backlog | low     | ["task-010", "task-999"]                        | Jules     |
+| task-011     | Refinar comunicação backend-frontend (/chat endpoint)   | development   | backlog | low     | ["task-010"]                        | Jules     |
 | task-012     | Implementar lógica do script bootstrap.sh interativo no backend | development   | done | medium     | ["task-010"]                        | Jules     |
 | task-013     | Implementar tratamento de erros no backend              | development   | done        | medium     | ["task-010"]                        | Jules     |
 | task-014     | Inicializar aplicação frontend React com TypeScript     | development   | done        | high       | ["task-002", "task-004"]            | Jules     |
@@ -44,4 +44,5 @@
 | task-040     | Testes para a task-013 (Tratamento de Erros no Backend) | test          | done        | medium     | ["task-013"]                        | Jules     |
 | task-041     | Testes para a task-019 (Implementar tratamento de erros no frontend) | test          | done        | medium     | ["task-019"]                        | Jules     |
 | task-042     | Testes para a task-020 (Aplicar estilo visual básico e limpo à aplicação frontend) | test | failed      | low        | ["task-020"]                        | Jules     |
-| task-043     | Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker) | fix | in_progress  | high       | ["task-034", "task-036", "task-038", "task-042"] | Jules     |
+| task-043     | Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker) | fix | backlog  | high       | ["task-034", "task-036", "task-038", "task-042"] | Jules     |
+ | task-044     | Revisão e Melhoria da Configuração de Containerização e Ambiente | refactor | in_progress  | high       | [] | Jules     |
