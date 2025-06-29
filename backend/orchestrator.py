@@ -80,6 +80,23 @@ class SessionManager:
         self.project_name = project_name
         self.add_message_to_history("system", f"Nome do projeto definido como: {project_name}")
 
+    def requires_approval(self) -> bool:
+        """
+        Determina se a fase atual da conversa exige uma etapa de aprovação do usuário.
+        Placeholder: Esta lógica precisará ser refinada.
+        Por exemplo, pode verificar se a última mensagem da IA contém um marcador específico
+        ou se um certo número de interações ocorreu na fase atual.
+        """
+        # Exemplo simples: sempre requer aprovação no estado DEVOPS após algumas mensagens
+        if self.current_state == AppStates.DEVOPS and len(self.conversation_history) > 5:
+            return True
+        # Exemplo: requer aprovação se a última mensagem da IA contiver "[APROVAR AGORA]"
+        if self.conversation_history:
+            last_ai_message = next((msg["content"] for msg in reversed(self.conversation_history) if msg["role"] == "assistant"), None)
+            if last_ai_message and "[APROVAR AGORA]" in last_ai_message:
+                return True
+        return False
+
 
 class Orchestrator:
     def __init__(self):
@@ -104,12 +121,14 @@ class Orchestrator:
         )
 
         self.session.add_message_to_history("assistant", response_content)
+        is_approval_step = self.session.requires_approval()
 
         return {
             "user_message": user_message,
             "ai_response": response_content,
             "current_state": self.session.current_state.value,
-            "history_length": len(self.session.conversation_history)
+            "history_length": len(self.session.conversation_history),
+            "is_approval_step": is_approval_step
         }
 
     def change_phase(self, new_phase_name: str) -> Dict[str, Any]:
