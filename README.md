@@ -1,68 +1,67 @@
-# Projeto Gemini Workflow: Linha de Produção para Desenvolvimento Assistido por IA
+# Planejador Gemini-Flow
 
-## Visão Geral
+O **Planejador Gemini-Flow** é uma aplicação web interativa projetada para auxiliar na arquitetura de software. Utilizando uma interface de chat, ele guia os usuários através de um diálogo colaborativo com uma IA (potencializada pelo Google Gemini) para transformar um objetivo de alto nível em uma estrutura de projeto completa, incluindo artefatos como planos de trabalho, scripts de criação de issues e configurações de ambiente.
 
-Este repositório centraliza a nossa "Linha de Produção de Software", um conjunto de "Gems" (prompts estruturados) que orquestram o ciclo de vida do desenvolvimento com a assistência do Gemini. O objetivo é transformar um plano inicial numa base de projeto totalmente configurada, garantindo consistência, qualidade e máxima automação.
+## Arquitetura
 
-## Ferramenta Principal: `gemini-cli`
+A aplicação é construída com a seguinte stack:
 
-Todo o desenvolvimento assistido por IA e a interação com os modelos Gemini **devem** ser realizados através da ferramenta de linha de comando `gemini-cli`. Ela permite um controlo granular sobre as ações da IA, incluindo a revisão de código, o uso de ferramentas e um fluxo de trabalho seguro e reprodutível.
+*   **Frontend:** React com TypeScript, fornecendo uma interface de usuário dinâmica e responsiva.
+*   **Backend:** Python com o framework FastAPI, gerenciando a lógica de negócios, o estado da conversa e a comunicação com a API do Gemini.
+*   **Orquestração de IA:** A biblioteca LangChain (versão Python) é usada no backend para gerenciar as interações com o modelo Gemini.
+*   **Containerização:** Docker e Docker Compose são utilizados para garantir um ambiente de desenvolvimento e execução consistente e fácil de configurar.
 
-## O Pipeline de Automação (Fase 1 ➡️ Fase 2 ➡️ Fase 3)
+## Pré-requisitos
 
-O nosso processo para cada novo projeto segue um pipeline de três fases, onde o resultado de uma fase é a entrada da seguinte. Cada fase é guiada por um Gem especialista.
+Antes de executar a aplicação, certifique-se de que você tem o seguinte software instalado:
 
-### Fase 1: Orquestração do Plano Mestre
+*   [Docker](https://docs.docker.com/get-docker/)
+*   [Docker Compose](https://docs.docker.com/compose/install/) (geralmente incluído nas instalações mais recentes do Docker Desktop)
 
-O primeiro passo é transformar os requisitos de negócio numa "partitura" técnica que guiará toda a automação subsequente.
+## Configuração
 
-* **Gem a ser utilizado:** **Maestro de Projetos** (o antigo "Arquiteto de Projetos")
-* **Ficheiro de Instruções:** `gemini-gem-arquiteto-de-projetos.md`
-* **Processo:**
-    1.  Crie um novo Gem no Gemini Advanced utilizando o conteúdo do ficheiro de instruções.
-    2.  Inicie uma conversa com o "Maestro". Ele irá guiá-lo interativamente para criar o plano do projeto, recolhendo todos os detalhes necessários para as fases seguintes.
-* **Resultado Esperado:**
-    * O Gem fornecerá o conteúdo completo para o ficheiro `working-plan.md`. Este documento é a **única fonte da verdade** e deve ser salvo na raiz do repositório do projeto e commitado no Git.
+1.  **Chave da API do Gemini:**
+    Este projeto requer uma chave da API do Google Gemini para interagir com os modelos de linguagem.
+    *   Copie o arquivo `.env.example` para um novo arquivo chamado `.env` na raiz do projeto:
+        ```bash
+        cp .env.example .env
+        ```
+    *   Abra o arquivo `.env` e substitua `SUA_CHAVE_AQUI` pela sua chave da API do Gemini:
+        ```
+        GEMINI_API_KEY=SUA_CHAVE_AQUI_REAL
+        ```
 
-### Fase 2: Geração Automatizada de Issues
+## Como Executar a Aplicação
 
-Com o plano definido, processamo-lo para criar tarefas rastreáveis no GitHub de forma automática.
+Com o Docker e o Docker Compose instalados e o arquivo `.env` configurado:
 
-* **Gem a ser utilizado:** **Gerente de Issues**
-* **Ficheiro de Instruções:** `gemini-gem-gerente-de-issues.md`
-* **Processo:**
-    1.  Crie um Gem com o conteúdo do ficheiro de instruções.
-    2.  Inicie uma conversa e forneça a ele **apenas o conteúdo do `working-plan.md`**. O Gem irá extrair de forma inteligente a URL do repositório, os títulos, corpos, responsáveis (`@`) e etiquetas (`#`) diretamente do plano.
-* **Resultado Esperado:**
-    * O Gem irá gerar um script shell (ex: `create_issues.sh`). Salve e execute este script para criar todas as tarefas como Issues no GitHub de uma só vez.
+1.  **Construir e Iniciar os Containers:**
+    Navegue até o diretório raiz do projeto no seu terminal e execute o seguinte comando:
+    ```bash
+    sudo docker compose up --build
+    ```
+    Este comando irá construir as imagens Docker para o frontend e o backend (se ainda não estiverem construídas ou se houver alterações) e, em seguida, iniciará os serviços. O `sudo` pode ser necessário dependendo da configuração do seu Docker.
 
-### Fase 3: Arquitetura do Ambiente de Desenvolvimento
+2.  **Acessar a Aplicação:**
+    *   O **Frontend** estará acessível em: `http://localhost:3000`
+    *   O **Backend API** estará acessível em: `http://localhost:8000` (com documentação interativa da API em `http://localhost:8000/docs`)
 
-Com o projeto planeado e as tarefas criadas, arquitetamos o ambiente local para que o `gemini-cli` atue de forma otimizada.
+3.  **Parar a Aplicação:**
+    Para parar os containers, pressione `Ctrl+C` no terminal onde o `docker compose up` está rodando. Para remover os containers (e redes), você pode usar:
+    ```bash
+    sudo docker compose down
+    ```
 
-* **Gem a ser utilizado:** **Arquiteto de Soluções DevOps & AI**
-* **Ficheiro de Instruções:** `gemini-gem-super-devops.md`
-* **Processo:**
-    1.  Crie um Gem com o conteúdo do ficheiro de instruções.
-    2.  Inicie uma conversa e forneça a ele o conteúdo do `working-plan.md`.
-    3.  O Gem irá analisar o plano e **propor uma arquitetura de configuração completa** para sua validação, em vez de fazer uma consultoria longa.
-* **Resultado Esperado:**
-    * O Gem fornecerá o conteúdo para três ficheiros essenciais:
-        * `settings.json`: Configuração **específica do projeto** (salvar em `.gemini/settings.json` na raiz do projeto).
-        * `.env.example`: **Template seguro** para segredos do projeto (salvar na raiz do projeto).
-        * `GEMINI.md`: A "constituição" do projeto com as instruções para a IA (salvar na raiz do projeto).
+## Fluxo da Aplicação (Resumo)
 
-## Como Começar
-
-1.  Clone este repositório para ter acesso local aos ficheiros dos Gems.
-2.  Acesse sua conta do Gemini Advanced.
-3.  Crie os três Gems descritos acima, nomeando-os de forma clara (ex: "Maestro de Projetos").
-4.  Para cada novo projeto da equipe, siga rigorosamente o pipeline de três fases.
+1.  **Início:** O usuário fornece um nome para o projeto a ser planejado.
+2.  **Fases Guiadas:** A aplicação guia o usuário por três fases principais através de um chat com a IA:
+    *   Planejamento do Projeto
+    *   Definição de Issues
+    *   Configuração do Ambiente
+3.  **Aprovação do Usuário:** Cada fase requer a aprovação explícita do usuário antes de prosseguir.
+4.  **Geração de Artefatos:** Ao final, a aplicação gera os documentos e scripts de planejamento em um diretório de saída.
 
 ## Contribuições
 
-Melhorias nos prompts e no pipeline são bem-vindas. Por favor, abra uma issue para discutir as mudanças e envie um Pull Request para revisão.
-
-## Licença
-
-Este projeto está licenciado sob a Licença MIT. Veja o ficheiro `LICENSE` para mais detalhes.
+Este projeto é um componente dentro do repositório maior "Projeto Gemini Workflow". Contribuições para o "Planejador Gemini-Flow" devem seguir as diretrizes gerais do repositório.
