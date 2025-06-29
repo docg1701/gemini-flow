@@ -71,11 +71,6 @@ RUN rm -rf /app/.venv
 # Copia o restante dos arquivos da aplicação COMO ROOT
 COPY backend/ ./
 
-# -- DEBUGGING --
-RUN echo "--- DEBUG: Verificando usuário antes do chown final (deve ser root) ---" && whoami
-RUN echo "--- DEBUG: Listando /app antes do chown final ---" && ls -la /app
-# -- END DEBUGGING --
-
 # Chown final de tudo em /app para appuser, EXECUTADO COMO ROOT
 RUN chown -R ${APP_USER}:${APP_GROUP} /app
 
