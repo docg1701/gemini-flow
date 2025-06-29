@@ -22,16 +22,29 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+# duration_minutes: 0 # Placeholder
 # files_modified:
 #   - backend/main.py
-# reference_documents_consulted: ["fastapi_research.md"]
+# reference_documents_consulted: ["fastapi_research.md", "https://fastapi.tiangolo.com/tutorial/handling-errors/", "https://fastapi.tiangolo.com/advanced/middleware/"]
 # execution_details: |
-#   Middleware ou handlers de exceção adicionados ao backend/main.py para tratamento padronizado de erros.
+#   1. Imported `logging`, `Request`, `JSONResponse` from FastAPI.
+#   2. Added placeholder imports for `google.api_core.exceptions` to define handlers for potential Google API errors.
+#   3. Configured basic logging using `logging.basicConfig(level=logging.INFO)`.
+#   4. Defined custom exceptions: `OrchestratorError` and `GeminiAPIError`.
+#   5. Implemented global exception handlers in `backend/main.py` using `@app.exception_handler`:
+#      - `OrchestratorError`: Returns 400 with error code.
+#      - `GeminiAPIError`: Returns 502 with error code.
+#      - `google_exceptions.PermissionDenied`: Returns 502 with error code.
+#      - `google_exceptions.GoogleAPIError`: Returns 502 with error code.
+#      - `HTTPException` (FastAPI's own): Custom handler to ensure logging and add a generic "HTTP_EXCEPTION" error_code.
+#      - `Exception` (generic fallback): Returns 500 with "INTERNAL_SERVER_ERROR" code.
+#   6. All handlers log the error with relevant details.
+#   7. Responses are standardized to JSON with `detail` and `error_code` fields.
+#   8. Existing try/except blocks in endpoints that raised generic HTTPExceptions will now often be caught by these more specific global handlers or the custom HTTPException handler, ensuring logging and standardized format.
 # ---------------------------------------------------------------
 ---
 

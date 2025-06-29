@@ -3,8 +3,8 @@ id: task-011
 title: "Refinar comunicação backend-frontend (/chat endpoint)"
 type: development
 status: backlog
-priority: medium
-dependencies: ["task-010"] # Depende da API principal
+priority: low
+dependencies: ["task-010", "task-999"] # Depende da API principal
 parent_plan_objective_id: "8"
 discovered_research_needed: []
 assigned_to: Jules

@@ -46,23 +46,66 @@ export interface ApiGenerateFilesResponse {
 
 // --- API Service Functions ---
 
+
+// --- Custom Error Class ---
+export class APIError extends Error {
+  status: number;
+  errorCode?: string;
+  errorData?: any; // To store the full error response body if needed
+
+  constructor(message: string, status: number, errorCode?: string, errorData?: any) {
+    super(message);
+    this.name = 'APIError';
+    this.status = status;
+    this.errorCode = errorCode;
+    this.errorData = errorData;
+    // Set the prototype explicitly for correct instanceof checks.
+    Object.setPrototypeOf(this, APIError.prototype);
+  }
+}
+
 /**
- * Helper function to handle fetch responses and errors.
+ * Helper function to handle fetch responses and parse API errors.
  */
-async function handleResponse<T>(response: Response): Promise<T> {
+async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    let errorData;
+    let errorJson: any = null;
+    let errorMessage = `HTTP error! Status: ${response.status} ${response.statusText || ''}`.trim();
+    let errorCode: string | undefined = undefined;
+
     try {
-      errorData = await response.json();
+      errorJson = await response.json();
+      if (errorJson && errorJson.detail) {
+        errorMessage = errorJson.detail;
+      }
+      if (errorJson && errorJson.error_code) {
+        errorCode = errorJson.error_code;
+      }
     } catch (e) {
-      // Not a JSON response, or other error parsing JSON
-      throw new Error(response.statusText || `HTTP error! status: ${response.status}`);
+      // Response was not JSON or error parsing JSON.
+      // errorMessage is already set to a default from response.statusText.
+      // If response.statusText is also empty, it falls back to the generic HTTP error message.
     }
-    // Use error detail from FastAPI if available
-    const message = errorData?.detail || response.statusText || `HTTP error! status: ${response.status}`;
-    throw new Error(message);
+    throw new APIError(errorMessage, response.status, errorCode, errorJson);
   }
   return response.json() as Promise<T>;
+}
+
+/**
+ * Wraps fetch calls to also catch network errors and convert them to APIError.
+ */
+async function fetchWithErrorHandling<T>(url: string, options?: RequestInit): Promise<T> {
+  try {
+    const response = await fetch(url, options);
+    return await handleApiResponse<T>(response);
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw error; // Re-throw if it's already our custom APIError (from handleApiResponse)
+    }
+    // This catches network errors (e.g., server down, DNS issues) or other unexpected errors during fetch
+    const message = error instanceof Error ? error.message : 'A network error occurred. Please check your connection.';
+    throw new APIError(message, 0, 'NETWORK_ERROR'); // status 0 for network errors
+  }
 }
 
 /**
@@ -70,14 +113,13 @@ async function handleResponse<T>(response: Response): Promise<T> {
  * Corresponds to backend POST /start
  */
 export async function startSession(payload: ApiStartRequest): Promise<ApiStartResponse> {
-  const response = await fetch(`${API_BASE_URL}/start`, {
+  return fetchWithErrorHandling<ApiStartResponse>(`${API_BASE_URL}/start`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
   });
-  return handleResponse<ApiStartResponse>(response);
 }
 
 /**
@@ -85,14 +127,13 @@ export async function startSession(payload: ApiStartRequest): Promise<ApiStartRe
  * Corresponds to backend POST /chat
  */
 export async function sendMessage(payload: ApiChatRequest): Promise<ApiChatResponse> {
-  const response = await fetch(`${API_BASE_URL}/chat`, {
+  return fetchWithErrorHandling<ApiChatResponse>(`${API_BASE_URL}/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
   });
-  return handleResponse<ApiChatResponse>(response);
 }
 
 /**
@@ -100,14 +141,13 @@ export async function sendMessage(payload: ApiChatRequest): Promise<ApiChatRespo
  * Corresponds to backend POST /approve
  */
 export async function approvePhase(): Promise<ApiApproveResponse> {
-  const response = await fetch(`${API_BASE_URL}/approve`, {
+  return fetchWithErrorHandling<ApiApproveResponse>(`${API_BASE_URL}/approve`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json', // Even if no body, good practice
     },
     // No body for this request as per backend/main.py
   });
-  return handleResponse<ApiApproveResponse>(response);
 }
 
 /**
@@ -115,12 +155,11 @@ export async function approvePhase(): Promise<ApiApproveResponse> {
  * Corresponds to backend POST /generate_files
  */
 export async function generateFiles(): Promise<ApiGenerateFilesResponse> {
-  const response = await fetch(`${API_BASE_URL}/generate_files`, {
+  return fetchWithErrorHandling<ApiGenerateFilesResponse>(`${API_BASE_URL}/generate_files`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     // No body for this request
   });
-  return handleResponse<ApiGenerateFilesResponse>(response);
 }
