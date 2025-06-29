@@ -42,4 +42,4 @@
 | task-038     | Correção: Testes Falhando em frontend/src/App.test.tsx   | fix           | failed      | high       | ["task-037"]                        | Jules     |
 | task-039     | Testes para a task-012 (Geração de bootstrap.sh)        | test          | in_progress | medium     | ["task-012"]                        | Jules     |
 | task-040     | Testes para a task-013 (Tratamento de Erros no Backend) | test          | done        | medium     | ["task-013"]                        | Jules     |
-| task-041     | Testes para a task-019 (Implementar tratamento de erros no frontend) | test          | backlog     | medium     | ["task-019"]                        | Jules     |
+| task-041     | Testes para a task-019 (Implementar tratamento de erros no frontend) | test          | done        | medium     | ["task-019"]                        | Jules     |

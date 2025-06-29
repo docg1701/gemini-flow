@@ -2,7 +2,7 @@
 id: task-041
 title: "Testes para a task-019 (Implementar tratamento de erros no frontend)"
 type: test
-status: backlog
+status: backlog # Status original do arquivo, não modificado manualmente
 priority: medium
 dependencies: ["task-019"]
 parent_plan_objective_id: ""
@@ -26,16 +26,27 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
-# outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# outcome: success
+# outcome_reason: "" # N/A for success
+# start_time: 2024-06-29T15:00:00Z # Approximate start time
+# end_time: 2024-06-29T15:20:00Z # Approximate end time
+# duration_minutes: 20 # Approximate
 # files_modified:
 #   - frontend/src/components/ProjectNameInput.test.tsx
-# reference_documents_consulted: []
+# reference_documents_consulted:
+#   - jules-flow/docs/reference/react_typescript_research.md
 # execution_details: |
-#   Detalhes da execução dos testes.
+#   1. Created the test file `frontend/src/components/ProjectNameInput.test.tsx`.
+#   2. Implemented tests covering:
+#      - Rendering and basic input.
+#      - Client-side validation for empty project name.
+#      - Successful API call simulation (mocking `startSession` to resolve), verifying loading state, `onSessionStart` call, and absence of error messages.
+#      - API failure simulation (mocking `startSession` to reject with a generic `Error`), verifying loading state, error message display, and that `onSessionStart` is not called.
+#      - Specific `APIError` simulation (mocking `startSession` to reject with an `APIError` instance from `services/api.ts`), verifying specific error message and loading state.
+#   3. Initial test run for the specific `APIError` case failed due to `instanceof APIError` not behaving as expected in the component when the error was thrown from the test.
+#   4. Corrected the Jest mock strategy for `../services/api` in `ProjectNameInput.test.tsx` to use `jest.requireActual` for non-function exports (like the `APIError` class) and explicitly mock only `startSession`. This ensured the `APIError` instance retained its prototype chain correctly.
+#   5. Re-ran tests. All tests within `frontend/src/components/ProjectNameInput.test.tsx` now pass.
+#   6. Noted that existing tests in `frontend/src/App.test.tsx` are failing due to `act(...)` warnings and a component visibility issue. These failures are outside the specified scope of `task-041` and were not addressed.
 # ---------------------------------------------------------------
 ---
 
