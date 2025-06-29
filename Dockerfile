@@ -64,8 +64,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
 
 # Instalar dependências do projeto COMO ROOT.
 # Poetry vai instalar os pacotes em um local do sistema que o appuser poderá ler.
-# --no-virtualenv pode ser redundante com as configs acima, mas não custa
-RUN poetry install --no-interaction --no-ansi --no-root --no-virtualenv
+RUN poetry install --no-interaction --no-ansi --no-root
 # Remover .venv se criado acidentalmente
 RUN rm -rf /app/.venv
 
