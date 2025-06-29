@@ -54,6 +54,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false \
+    && poetry config virtualenvs.in-project false \
+    && poetry config virtualenvs.path null \
     && poetry env use system \
     && mkdir -p "$POETRY_CACHE_DIR" \
     # Chown inicial para o diretório de trabalho e cache do poetry para appuser
@@ -62,7 +64,10 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
 
 # Instalar dependências do projeto COMO ROOT.
 # Poetry vai instalar os pacotes em um local do sistema que o appuser poderá ler.
-RUN poetry install --no-interaction --no-ansi --no-root
+# --no-virtualenv pode ser redundante com as configs acima, mas não custa
+RUN poetry install --no-interaction --no-ansi --no-root --no-virtualenv
+# Remover .venv se criado acidentalmente
+RUN rm -rf /app/.venv
 
 # Copia o restante dos arquivos da aplicação COMO ROOT
 COPY backend/ ./
