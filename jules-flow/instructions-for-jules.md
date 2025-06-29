@@ -10,16 +10,25 @@ Este documento detalha o fluxo de trabalho completo que você, Jules, deve segui
 2.  **Gestão de Estado por Arquivos**: O estado do projeto é definido pela localização dos arquivos de tarefa (`task-XXX.md`) nos diretórios `jules-flow/backlog/`, `jules-flow/in_progress/`, `jules-flow/done/` e `jules-flow/failed/`.
 3.  **Índice Central como Fonte da Verdade**: O arquivo `jules-flow/task-index.md` é a única fonte da verdade para o status e o histórico de todas as tarefas. Ele **deve ser atualizado** a cada mudança de estado de uma tarefa (ex: de `jules-flow/backlog/` para `jules-flow/in_progress/`).
 4.  **Imutabilidade do Status no Arquivo da Tarefa**: O cabeçalho `status:` dentro do arquivo `.md` de uma tarefa é definido apenas no momento de sua criação (normalmente como `backlog`) e **não deve ser alterado manualmente por você**. O progresso é refletido no `jules-flow/task-index.md` e na movimentação do arquivo entre os diretórios.
-5.  **Uso Correto do Docker Compose**: Ao interagir com Docker Compose, utilize sempre a sintaxe moderna `docker compose` (sem hífen). Para comandos que exigem interação com o daemon Docker e podem necessitar de privilégios elevados (ex: `docker compose up`, `docker compose down`, `docker build`), utilize `sudo docker compose ...` para garantir a execução correta no ambiente da VM, a menos que o `working-plan.md` ou a descrição da tarefa especifique explicitamente o contrário para um contexto particular ou se o `jules_bootstrap.sh` já configurar o Docker para execução sem `sudo`.
+5.  **Uso Correto do Docker Compose**: Ao interagir com Docker Compose, utilize sempre a sintaxe moderna `docker compose` (sem hífen). Para comandos que exigem interação com o daemon Docker e podem necessitar de privilégios elevados (ex: `docker compose up`, `docker compose down`, `docker build`), utilize `sudo docker compose ...` para garantir a execução correta no ambiente da VM, a menos que o `jules-flow/working-plan.md` ou a descrição da tarefa especifique explicitamente o contrário para um contexto particular ou se o `jules_bootstrap.sh` já configurar o Docker para execução sem `sudo`.
 ---
 
-### O Fluxo de Trabalho em 6 Fases
+### O Fluxo de Trabalho em 7 Fases
 
 #### Fase 1: Descoberta e Pesquisa
 
-* **Objetivo**: Limpar o ambiente de trabalho, preparar o script de bootstrap da VM, identificar o escopo de pesquisa e buscar o conhecimento necessário.
+* **Objetivo**: Limpar o ambiente de trabalho, preparar o script de bootstrap da VM, estabelecer diretrizes do agente, identificar o escopo de pesquisa e buscar o conhecimento necessário.
 * **Ação**:
-    1.  **Análise Inicial de Dependências e Criação/Atualização do `jules_bootstrap.sh`**:
+    1.  **Configuração Inicial do `AGENTS.md` do Projeto**:
+        *   Verifique se um arquivo `AGENTS.md` existe na raiz do projeto atual (`./AGENTS.md`).
+        *   Se `./AGENTS.md` não existir:
+            *   Copie o arquivo `jules-flow/templates/AGENTS.md` para `./AGENTS.md` na raiz do projeto atual.
+            *   Use `ls()` para confirmar a cópia.
+        *   Se `./AGENTS.md` já existir:
+            *   Leia o conteúdo de `jules-flow/templates/AGENTS.md` e de `./AGENTS.md`.
+            *   Verifique se as diretrizes essenciais do template (especialmente sobre comentários, Docker e versões) já estão cobertas no `AGENTS.md` existente.
+            *   Se houver diretrizes do template ausentes, adicione-as ao `./AGENTS.md` existente, preferencialmente em uma seção apropriada ou ao final do arquivo, evitando duplicações e respeitando o conteúdo preexistente. Indique que estas são diretrizes gerais que podem ser sobrepostas por instruções mais específicas do projeto.
+    2.  **Análise Inicial de Dependências e Criação/Atualização do `jules_bootstrap.sh`**:
         *   Verifique se o arquivo `jules_bootstrap.sh` existe na raiz do projeto. Se não existir, crie-o com o conteúdo inicial:
             ```bash
             #!/bin/bash
@@ -38,36 +47,44 @@ Este documento detalha o fluxo de trabalho completo que você, Jules, deve segui
             *   Adicione comandos de forma a serem idempotentes, se possível (ex: `apt-get install -y` já lida com isso).
             *   Se o `jules_bootstrap.sh` já contiver comandos similares, evite duplicação desnecessária, mas prefira adicionar se não tiver certeza de que a dependência exata já está coberta.
         *   Esta etapa deve ser considerada como uma tentativa de "melhor esforço" para preparar o ambiente. Problemas de dependência ainda podem surgir durante a execução das tarefas.
-    2.  **Limpeza do Ambiente de Tarefas**: Exclua todos os arquivos de tarefas (`.md`) dos diretórios `jules-flow/backlog/`, `jules-flow/in_progress/`, `jules-flow/done/`, `jules-flow/failed/`. Limpe também o conteúdo de `jules-flow/docs/reference/` (exceto `.gitkeep`).
-    3.  **No arquivo `jules-flow/task-index.md`, preserve apenas o cabeçalho e limpe o restante da tabela**. O cabeçalho esperado é:
+    3.  **Limpeza do Ambiente de Tarefas**: Exclua todos os arquivos de tarefas (`.md`) dos diretórios `jules-flow/backlog/`, `jules-flow/in_progress/`, `jules-flow/done/` e `jules-flow/failed/`. Limpe também o conteúdo de `jules-flow/docs/reference/` (exceto `.gitkeep`).
+    4.  **No arquivo `jules-flow/task-index.md`, preserve apenas o cabeçalho e limpe o restante da tabela**. O cabeçalho esperado é:
     	```markdown
     	# Índice de Tarefas Jules-Flow
 
     	| ID da Tarefa | Título | Tipo | Status | Prioridade | Dependências | Atribuído |
     	|--------------|--------|------|--------|------------|--------------|-----------|
     	```
-    4.  **Análise do `jules-flow/working-plan.md` para Pesquisa**: Leia o `jules-flow/working-plan.md`. Identifique as áreas que exigem pesquisa de documentação.
-    5.  **Criação das Tarefas de Pesquisa**: Crie `task`s do tipo `research` para cada tópico identificado. (Lembre-se de verificar a criação física de cada task de pesquisa em `jules-flow/backlog/` antes de adicioná-las ao `jules-flow/task-index.md`).
-    6.  **Execução da Pesquisa**: Para cada `task` de pesquisa, execute a busca por documentação oficial e compile os resultados em arquivos de referência dentro de `jules-flow/docs/reference/`.
+    5.  **Análise do `jules-flow/working-plan.md` para Pesquisa**: Leia o `jules-flow/working-plan.md`. Identifique as áreas que exigem pesquisa de documentação.
+    6.  **Criação das Tarefas de Pesquisa**: Crie `task`s do tipo `research` para cada tópico identificado. (Lembre-se de verificar a criação física de cada task de pesquisa em `jules-flow/backlog/` antes de adicioná-las ao `jules-flow/task-index.md`).
+    7.  **Execução da Pesquisa**: Para cada `task` de pesquisa, execute a busca por documentação oficial e compile os resultados em arquivos de referência dentro de `jules-flow/docs/reference/`.
 
 #### Fase 2: Preparação e Decomposição do Plano
 
-* **Objetivo**: Converter o `jules-flow/working-plan.md` em tarefas executáveis.
+* **Objetivo**: Converter o `jules-flow/working-plan.md` em tarefas executáveis, incluindo a geração de uma visão geral do projeto.
 * **Ação**:
     1.  Leia o `jules-flow/working-plan.md` para entender o escopo completo.
-    2.  Decomponha o plano em uma série de `task`s atômicas (como `development`, `test`, `documentation`), utilizando o `jules-flow/templates/task-template.md`. Se os passos do `jules-flow/working-plan.md` (conforme orientação no `README.md` para o Prompt de Planejamento) já representarem objetivos de médio porte, cada um desses passos pode gerar múltiplas tasks (ex: uma `development` para a lógica principal, uma `test` para validá-la, e uma `documentation` se aplicável). Se um passo do `jules-flow/working-plan.md` já for suficientemente atômico para uma única task (ex: 'Criar uma task de `research` para X'), a decomposição pode ser uma tradução direta para uma task.
-    3.  Para cada `task`, preencha cuidadosamente o cabeçalho YAML com `id`, `title`, `type`, `dependencies`, etc. (Se aplicável, preencha o campo `parent_plan_objective_id` com o identificador do objetivo ou passo do `jules-flow/working-plan.md` do qual esta tarefa foi derivada).
-    4.  Salve cada nova `task` no diretório `jules-flow/backlog/` usando `create_file_with_block`.
-    5.  **Verificar Criação Física das Tasks**: Para cada task que você tentou criar no passo anterior, use `ls('jules-flow/backlog/')` e verifique se o arquivo `.md` correspondente à task existe fisicamente. Mantenha uma lista mental ou temporária apenas das tasks cuja criação física foi confirmada. Se alguma task não foi criada, isso será mencionado no anúncio final desta fase (Passo 8).
-    6.  **Garantir o Cabeçalho do Índice**: Antes de popular o `jules-flow/task-index.md`, verifique se ele contém o cabeçalho da tabela. Se o arquivo estiver vazio ou o cabeçalho estiver ausente, escreva a seguinte estrutura no início do arquivo:
+    2.  **Geração da Tarefa `VISION.md`**:
+        *   Crie automaticamente uma nova `task` (ex: `task-VIS`) do tipo `documentation` (ou `vision_generation`) no diretório `jules-flow/backlog/`.
+        *   **Título:** "Gerar/Atualizar VISION.md com base no working-plan.md e análise do código existente".
+        *   **Descrição:** "Analisar o `jules-flow/working-plan.md` atual e, se aplicável, o código existente no repositório (especialmente se for uma atualização e não um projeto do zero). Com base nisso, gerar ou atualizar o arquivo `VISION.md` na raiz do projeto. Este arquivo deve detalhar:\n                *   O objetivo geral do projeto (conforme `jules-flow/working-plan.md`).\n                *   A arquitetura principal pretendida ou existente.\n                *   Uma descrição das principais funcionalidades ou módulos que serão desenvolvidos/afetados, conforme inferido do `jules-flow/working-plan.md`.\n                *   Quaisquer princípios de design ou tecnologias chave mencionadas ou implícitas no `jules-flow/working-plan.md`.\n                *   Os principais fluxos de interação ou dados esperados.\n                O `VISION.md` servirá como um documento de referência de alto nível para guiar o desenvolvimento subsequente."
+        *   **Prioridade:** `high`.
+        *   **Arquivos Relevantes:** `jules-flow/working-plan.md`, `VISION.md` (para criação/atualização na raiz do projeto), e potencialmente os principais diretórios de código fonte para análise contextual (ex: `src/`, `app/`).
+        *   **Critérios de Aceitação:** Um arquivo `VISION.md` é criado/atualizado na raiz do projeto contendo as seções descritas.
+        *   Adicione esta `task-VIS` ao `jules-flow/task-index.md` com status `backlog` e verifique sua criação física em `jules-flow/backlog/`.
+    3.  Decomponha o plano em uma série de `task`s atômicas (como `development`, `test`, `documentation`), utilizando o `jules-flow/templates/task-template.md`. Se os passos do `jules-flow/working-plan.md` (conforme orientação no `README.md` para o Prompt de Planejamento) já representarem objetivos de médio porte, cada um desses passos pode gerar múltiplas tasks (ex: uma `development` para a lógica principal, uma `test` para validá-la, e uma `documentation` se aplicável). Se um passo do `jules-flow/working-plan.md` já for suficientemente atômico para uma única task (ex: 'Criar uma task de `research` para X'), a decomposição pode ser uma tradução direta para uma task.
+    4.  Para cada `task` (excluindo a `task-VIS` já criada), preencha cuidadosamente o cabeçalho YAML com `id`, `title`, `type`, `dependencies`, etc. (Se aplicável, preencha o campo `parent_plan_objective_id` com o identificador do objetivo ou passo do `jules-flow/working-plan.md` do qual esta tarefa foi derivada).
+    5.  Salve cada nova `task` no diretório `jules-flow/backlog/` usando `create_file_with_block`.
+    6.  **Verificar Criação Física das Tasks**: Para cada task que você tentou criar no passo anterior (e incluindo a `task-VIS`), use `ls('jules-flow/backlog/')` e verifique se o arquivo `.md` correspondente à task existe fisicamente. Mantenha uma lista mental ou temporária apenas das tasks cuja criação física foi confirmada. Se alguma task não foi criada, isso será mencionado no anúncio final desta fase (Passo 9).
+    7.  **Garantir o Cabeçalho do Índice**: Antes de popular o `jules-flow/task-index.md`, verifique se ele contém o cabeçalho da tabela. Se o arquivo estiver vazio ou o cabeçalho estiver ausente, escreva a seguinte estrutura no início do arquivo:
         ```markdown
         # Índice de Tarefas Jules-Flow
 
         | ID da Tarefa | Título | Tipo | Status | Prioridade | Dependências | Atribuído |
         |--------------|--------|------|--------|------------|--------------|-----------|
         ```
-    7.  Popule o `jules-flow/task-index.md` com as informações de todas as **tasks confirmadas fisicamente no passo 5 desta fase**, e também com as tarefas de `research` da Fase 1 (cuja criação física também deve ter sido verificada e apenas as confirmadas adicionadas ao índice), garantindo que todas tenham o status inicial "backlog".
-    8.  Ao final desta fase, anuncie que o setup foi concluído e informe qual será a primeira `task` a ser executada na fase seguinte. Se houver discrepâncias na criação de tasks (identificadas no Passo 5), mencione-as claramente ao usuário.
+    8.  Popule o `jules-flow/task-index.md` com as informações de todas as **tasks confirmadas fisicamente no passo 6 desta fase** (incluindo a `task-VIS`), e também com as tarefas de `research` da Fase 1 (cuja criação física também deve ter sido verificada e apenas as confirmadas adicionadas ao índice), garantindo que todas tenham o status inicial "backlog".
+    9.  Ao final desta fase, anuncie que o setup foi concluído e informe qual será a primeira `task` a ser executada na fase seguinte. Se houver discrepâncias na criação de tasks (identificadas no Passo 6), mencione-as claramente ao usuário.
 
 #### Fase 3: Execução Inteligente e Dinâmica de Tarefas
 * **Objetivo**: Executar as tarefas de forma ordenada e segura.
@@ -88,7 +105,7 @@ Este documento detalha o fluxo de trabalho completo que você, Jules, deve segui
      d.  **Somente se a verificação em (c) for positiva**, delete o arquivo original `jules-flow/backlog/task-XXX.md`. Caso contrário, relate um erro crítico na movimentação e pare, solicitando intervenção do usuário.
      e.  Atualize o status da `task-XXX` para `in_progress` no `jules-flow/task-index.md`.
      f.  Este passo marca o início formal do trabalho na tarefa.
-  2. **Consulta de Conhecimento**: Antes de iniciar as modificações, verifique o diretório `jules-flow/docs/reference/`. Analise os arquivos de referência existentes para determinar se algum deles é relevante para a `task` atual.
+  2. **Consulta de Conhecimento**: Antes de iniciar as modificações, verifique o arquivo `VISION.md` (se existir na raiz do projeto) para obter um entendimento contextual do projeto. Em seguida, verifique o diretório `jules-flow/docs/reference/`. Analise os arquivos de referência existentes para determinar se algum deles é relevante para a `task` atual.
   3. **Executar**: Realize as alterações de código, testes ou pesquisa.
      *   **Princípio do Escopo Estrito de Modificação**: Você está estritamente proibido de alterar, mover ou excluir qualquer arquivo que não esteja explicitamente listado na seção "Arquivos Relevantes" da `task` ativa. Siga este princípio rigorosamente.
      *   **Necessidade de Pesquisa Dinâmica**: Se, durante a execução desta tarefa (especialmente `development` ou `fix`), você identificar a necessidade de uma pesquisa aprofundada que não foi prevista na Fase 1 e que é crucial para o progresso:
@@ -115,7 +132,7 @@ Este documento detalha o fluxo de trabalho completo que você, Jules, deve segui
          e.  Atualize o status da `task-XXX` para `done` no `jules-flow/task-index.md`.
      2.  **Geração Automática de Tarefa de Teste**: Se a tarefa concluída for do tipo `development`, crie automaticamente uma nova tarefa do tipo `test` (verifique sua criação física em `jules-flow/backlog/`). O título deve ser "Testes para a task-XXX", onde XXX é o ID da tarefa de desenvolvimento. Na descrição, detalhe que o objetivo é validar a funcionalidade recém-implementada. Coloque esta nova tarefa no diretório `jules-flow/backlog/` e adicione-a ao `jules-flow/task-index.md`.
   7.  **Em caso de Falha**:
-      *   Analise o log de erro no "Relatório de Execução" da `task-XXX.md` (em `jules-flow/in_progress/`).
+      *   Analise o log de erro no "Relatório de Execução" da `task-XXX.md` (em `jules-flow/in_progress/task-XXX.md`).
       *   **Sub-fluxo: Falha por Dependência de Sistema Ausente:** Se a tarefa for do tipo `test` ou `development` (ou qualquer tipo que execute comandos externos) e o log de erro indicar claramente um comando não encontrado ou uma biblioteca de sistema ausente (ex: "comando_X: not found", "error while loading shared libraries: libXYZ.so.0"):
           1.  Tente identificar o nome do pacote de sistema faltante com base na mensagem de erro.
           2.  Se um pacote for identificado:
@@ -170,7 +187,7 @@ Este documento detalha o fluxo de trabalho completo que você, Jules, deve segui
 
 ### Processo Especial: Adaptação de Plano em Execução
 
-Este processo é acionado por Jules durante a **Fase 3 (Execução Inteligente e Dinâmica de Tarefas)** caso seja identificada uma necessidade de alteração significativa no `working-plan.md` que vá além da criação de simples tarefas de `fix` ou `research` pontuais.
+Este processo é acionado por Jules durante a **Fase 3 (Execução Inteligente e Dinâmica de Tarefas)** caso seja identificada uma necessidade de alteração significativa no `jules-flow/working-plan.md` que vá além da criação de simples tarefas de `fix` ou `research` pontuais.
 
 * **Gatilho**: Jules identifica que o plano de trabalho original é inviável, subótimo, ou que novas informações requerem uma mudança estratégica na abordagem definida no `jules-flow/working-plan.md`.
 * **Ação por Jules**:
@@ -205,3 +222,85 @@ Este processo é acionado por Jules durante a **Fase 3 (Execução Inteligente e
         *   Descartar tarefas antigas do `jules-flow/backlog/` que não são mais relevantes (instruindo Jules a deletá-las e atualizar o índice).
         *   Instruir Jules a executar uma "Fase 2 Parcial" (Preparação e Decomposição do Plano) focada apenas nas seções novas ou alteradas do `jules-flow/working-plan.md` para gerar novas tasks.
         *   Instruir Jules a continuar a Fase 3 com as tarefas novas e existentes.
+
+---
+
+#### Fase 7: Desenvolvimento Conjunto Humano-Jules (Modo Co-Dev)
+
+* **Objetivo**: Facilitar um ciclo de desenvolvimento e depuração altamente interativo entre o desenvolvedor humano e Jules, trabalhando no mesmo branch e com feedback rápido.
+* **Gatilho**: O usuário invoca esta fase através do "Prompt 2.8: Iniciar Modo de Desenvolvimento Conjunto (Co-Dev)".
+* **Ação**:
+
+    1.  **Análise e Preparação Inicial**:
+        *   Anuncie ao usuário: "Iniciando Modo de Desenvolvimento Conjunto (Co-Dev)."
+        *   Realize uma breve análise do estado atual do repositório, incluindo a estrutura do diretório `jules-flow/` (com `jules-flow/backlog/`, `jules-flow/in_progress/` etc.) e o arquivo `jules-flow/task-index.md`.
+        *   Obtenha o nome do branch Git atual em que você está operando. Você pode precisar usar um comando como `git rev-parse --abbrev-ref HEAD` ou similar através da ferramenta `run_in_bash_session`. Se não for possível obter o nome do branch de forma programática, informe ao usuário e peça que ele forneça o nome do branch.
+        *   Anuncie ao usuário: "Estou pronto para o Modo Co-Dev. Estou trabalhando no branch: `<nome-do-branch>`."
+        *   Instrua o usuário a preparar seu ambiente local com os seguintes comandos, substituindo `<nome-do-branch-de-Jules>` pelo nome do branch real:
+            ```text
+            Por favor, prepare seu ambiente local. Execute os seguintes comandos no seu terminal:
+            1. Certifique-se de que seu repositório local está atualizado com o remoto:
+               git fetch origin
+            2. Faça o checkout do branch em que estou trabalhando:
+               git checkout <nome-do-branch-de-Jules>
+            3. Garanta que seu branch local está sincronizado com o meu último commit (se você já tinha o branch):
+               git pull origin <nome-do-branch-de-Jules>
+            Avise-me quando estiver pronto.
+            ```
+        *   Aguarde a confirmação do usuário de que ele está pronto.
+
+    2.  **Seleção de Tarefa para Trabalho Conjunto**:
+        *   Após a confirmação do usuário, leia o `jules-flow/task-index.md`.
+        *   Liste todas as tarefas que **não** possuem o status `done`. Para cada tarefa, apresente o ID, Título e Status atual.
+        *   Peça ao usuário: "Por favor, escolha o ID da tarefa na qual gostaria de trabalhar em conjunto."
+        *   Aguarde a resposta do usuário com o ID da tarefa. Se o ID fornecido não for válido, informe e peça novamente.
+
+    3.  **Ciclo Iterativo de Desenvolvimento e Depuração da Tarefa Selecionada**:
+        *   Seja `task-CURRENT.md` a tarefa escolhida pelo usuário.
+        *   **Jules: Análise e Modificação**
+            1.  Anuncie: "Ok, vamos trabalhar na tarefa `<ID_da_tarefa_escolhida> - <Título_da_tarefa_escolhida>`."
+            2.  Leia o conteúdo de `task-CURRENT.md` (do seu diretório correspondente: `jules-flow/backlog/`, `jules-flow/in_progress/`, ou `jules-flow/failed/`).
+            3.  Analise os arquivos relevantes listados na tarefa e o objetivo da tarefa.
+            4.  Realize as modificações de código, configuração ou outros arquivos necessários para progredir na tarefa.
+            5.  Prepare uma mensagem para o usuário explicando:
+                *   O que foi modificado.
+                *   Por que foi modificado (racional).
+                *   Uma lista dos arquivos que foram alterados/criados/excluídos.
+            6.  **Commit das Modificações**:
+                *   Use a ferramenta `run_in_bash_session` para adicionar as alterações ao staging do Git (ex: `git add .` ou `git add <arquivo_específico>`).
+                *   Use a ferramenta `run_in_bash_session` para fazer um commit. A mensagem do commit deve ser descritiva, por exemplo: `git commit -m "Co-Dev: Progresso na task <ID_da_tarefa> - <breve descrição das mudanças>"`.
+                *   **Importante**: Este commit é feito no seu ambiente (VM).
+            7.  Envie a mensagem preparada (do passo 3.a.v) ao usuário. Adicione a seguinte instrução: "Fiz o commit das alterações. Por favor, execute `git pull origin <nome-do-branch-de-Jules>` no seu ambiente local para obter as últimas modificações."
+
+        *   **Usuário: Sincronização, Execução e Feedback**
+            1.  Aguarde o usuário confirmar que fez o `git pull` e está pronto para o próximo passo.
+            2.  Instrua o usuário sobre quais comandos ele deve rodar no ambiente local dele para testar/validar as modificações. Seja específico. Por exemplo:
+                *   "Por favor, execute `npm test` e me envie a saída completa do console."
+                *   "Compile o projeto com `mvn clean install` e me informe se houve erros. Se sim, envie o log do erro."
+                *   "Rode a aplicação e tente acessar a funcionalidade X. Descreva o comportamento e envie quaisquer erros do console do navegador ou logs do servidor."
+            3.  Peça ao usuário para enviar o resultado (output de console, logs, descrição do comportamento, etc.).
+            4.  Aguarde o feedback do usuário.
+
+        *   **Jules: Análise do Feedback e Nova Iteração**
+            1.  Analise cuidadosamente o feedback fornecido pelo usuário.
+            2.  Se o feedback indicar que a tarefa foi concluída com sucesso ou o problema foi resolvido:
+                *   Pergunte ao usuário: "Com base no seu feedback, parece que esta parte está funcionando. Você concorda que podemos considerar esta iteração/tarefa como concluída, ou há mais algo a fazer nesta tarefa específica?"
+                *   Se o usuário concordar que a tarefa (ou o objetivo da iteração atual) está concluída:
+                    *   Atualize o status da `task-CURRENT.md` para `done` no `jules-flow/task-index.md` e mova o arquivo para `jules-flow/done/` (se aplicável, conforme o estado original da tarefa).
+                    *   Anuncie: "Ótimo! Marquei a tarefa `<ID_da_tarefa>` como 'done'. Gostaria de selecionar outra tarefa para o Modo Co-Dev, ou podemos finalizar a sessão de Co-Dev?"
+                    *   Se o usuário quiser continuar com outra tarefa, volte para o Passo 2 (Seleção de Tarefa).
+                    *   Se o usuário quiser finalizar, vá para o Passo 4 (Finalização do Modo Co-Dev).
+            3.  Se o feedback indicar problemas, erros ou comportamento inesperado:
+                *   Anuncie: "Entendido. Analisando o problema..."
+                *   Tente identificar a causa raiz do problema com base no feedback.
+                *   Volte para o início do **Passo 3.a (Jules: Análise e Modificação)** para implementar correções. O ciclo se repete.
+
+    4.  **Finalização do Modo Co-Dev**:
+        *   Este passo é alcançado se o usuário indicar que deseja finalizar a sessão de Co-Dev (após concluir uma tarefa ou a qualquer momento).
+        *   Anuncie: "Modo de Desenvolvimento Conjunto (Co-Dev) finalizado. Retornando ao fluxo de trabalho padrão."
+        *   Aguarde novas instruções do usuário (por exemplo, para iniciar outra fase do Jules-Flow).
+
+    **Notas Importantes para o Modo Co-Dev**:
+    *   **Commits Incrementais**: O objetivo é que Jules faça commits pequenos e frequentes no branch compartilhado. A ferramenta `submit` normalmente é usada para finalizar um conjunto maior de trabalho. Se `submit` for a única maneira de Jules criar um commit e "empurrar" para o usuário, o fluxo acima precisará ser ajustado. Idealmente, Jules usaria comandos `git` via `run_in_bash_session` para `add` e `commit` localmente na VM, e o usuário faria `pull` dessas alterações. O "push" do branch de Jules para o `origin` deve ser coordenado ou assumido como parte do ambiente de Jules.
+    *   **Clareza nas Instruções**: É crucial que Jules seja muito claro nas instruções para o usuário (quais comandos rodar, qual feedback enviar).
+    *   **Gerenciamento de Estado da Tarefa**: As tarefas ainda devem seguir o sistema de gerenciamento de estado do Jules-Flow (`task-index.md`, movimentação entre diretórios) na medida do possível, especialmente ao concluir uma tarefa.
