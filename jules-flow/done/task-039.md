@@ -2,7 +2,7 @@
 id: task-039
 title: "Testes para a task-012 (Geração de bootstrap.sh)"
 type: test
-status: backlog
+status: backlog # Este status é do cabeçalho original, o status real é 'done' no task-index
 priority: medium
 dependencies: ["task-012"]
 parent_plan_objective_id: "9" # Matches parent task-012's objective
@@ -103,3 +103,4 @@ A verificação do conteúdo do script pode ser feita lendo o arquivo e procuran
 O diretório `output/` deve ser criado na raiz do projeto se não existir, e deve ser limpável após os testes.
 Lembrar que os testes não devem depender da execução real do `bootstrap.sh`, apenas de sua correta geração.
 A importação `from backend.file_generator import ...` em `main.py` pode ser um problema em ambiente Dockerizado, o teste deve ser robusto a isso ou o problema de import deve ser resolvido antes. (Nota: este é um teste da funcionalidade da task-012, não do problema de import em si).
+---
