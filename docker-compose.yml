@@ -10,11 +10,13 @@ services:
       #   APP_GROUP: ${BACKEND_APP_GROUP}
     ports:
       - "${BACKEND_HOST_PORT}:${BACKEND_CONTAINER_PORT}"
-    # env_file: # COMENTADO PARA TESTE
-    #   - ./.env
+    # environment:
+    #   - POETRY_NO_VIRTUALENVS=1 # Removido para testar efeito do 'poetry env use system'
+    env_file:
+      - ./.env
     volumes:
       - ./backend:/app
-    command: poetry run uvicorn main:app --host 0.0.0.0 --port ${BACKEND_CONTAINER_PORT} --reload --reload-dir /app
+    command: python -m uvicorn main:app --host 0.0.0.0 --port ${BACKEND_CONTAINER_PORT} --reload --reload-dir /app
     networks:
       - app-network
     healthcheck:

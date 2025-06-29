@@ -15,8 +15,8 @@ except ImportError:
         GoogleAPIError = type("GoogleAPIError", (Exception,), {})
 
 
-from backend.orchestrator import Orchestrator, AppStates
-from backend.file_generator import create_project_structure_and_files # Added for bootstrap generation
+from orchestrator import Orchestrator, AppStates
+from file_generator import create_project_structure_and_files # Added for bootstrap generation
 
 # --- Setup Logging ---
 logger = logging.getLogger(__name__)
@@ -153,15 +153,12 @@ async def chat_with_assistant(request: ChatRequest):
     try:
         response_data = orchestrator.process_user_message(user_message=request.user_message)
 
-        is_approval_step = False # Placeholder: Logic to determine this should be in Orchestrator
-        # Example: if orchestrator.session.requires_approval_now(): is_approval_step = True
-
         return ChatResponse(
             user_message=response_data["user_message"],
             ai_response=response_data["ai_response"],
             current_state=response_data["current_state"],
             history_length=response_data["history_length"],
-            is_approval_step=is_approval_step
+            is_approval_step=response_data["is_approval_step"]
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro no chat: {str(e)}")
