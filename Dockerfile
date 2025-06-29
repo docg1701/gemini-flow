@@ -54,6 +54,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.create false \
+    && poetry env use system \
     && mkdir -p "$POETRY_CACHE_DIR" \
     # Chown inicial para o diretório de trabalho e cache do poetry para appuser
     # Isso é feito antes do poetry install, mas poetry install ainda roda como root nesta versão

@@ -10,6 +10,8 @@ services:
       #   APP_GROUP: ${BACKEND_APP_GROUP}
     ports:
       - "${BACKEND_HOST_PORT}:${BACKEND_CONTAINER_PORT}"
+    # environment:
+    #   - POETRY_NO_VIRTUALENVS=1 # Removido para testar efeito do 'poetry env use system'
     # env_file: # COMENTADO PARA TESTE
     #   - ./.env
     volumes:
