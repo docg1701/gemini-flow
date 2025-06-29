@@ -21,7 +21,7 @@
 | task-017     | Gerenciar estado do frontend com React Hooks            | development   | done        | high       | ["task-014"]                        | Jules     |
 | task-018     | Implementar funções de comunicação com API no frontend  | development   | done        | high       | ["task-014", "task-010"]            | Jules     |
 | task-019     | Implementar tratamento de erros no frontend             | development   | done        | medium     | ["task-018", "task-017"]            | Jules     |
-| task-020     | Aplicar estilo visual básico e limpo à aplicação frontend | development   | backlog | low        | ["task-016"]                        | Jules     |
+| task-020     | Aplicar estilo visual básico e limpo à aplicação frontend | development   | done | low        | ["task-016"]                        | Jules     |
 | task-021     | Criar Dockerfile multi-stage                            | development   | done | high       | ["task-003", "task-007", "task-014"] | Jules     |
 | task-022     | Criar arquivo docker-compose.yml                        | development   | done | high       | ["task-021"]                        | Jules     |
 | task-023     | Reescrever README.md principal                          | documentation | done        | medium     | ["task-021", "task-022"]            | Jules     |
@@ -43,3 +43,4 @@
 | task-039     | Testes para a task-012 (Geração de bootstrap.sh)        | test          | in_progress | medium     | ["task-012"]                        | Jules     |
 | task-040     | Testes para a task-013 (Tratamento de Erros no Backend) | test          | done        | medium     | ["task-013"]                        | Jules     |
 | task-041     | Testes para a task-019 (Implementar tratamento de erros no frontend) | test          | done        | medium     | ["task-019"]                        | Jules     |
+| task-042     | Testes para a task-020 (Aplicar estilo visual básico e limpo à aplicação frontend) | test | backlog | low        | ["task-020"]                        | Jules     |

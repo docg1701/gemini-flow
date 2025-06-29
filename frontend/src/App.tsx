@@ -50,7 +50,7 @@ function App() {
       <header className="App-header-main">
         <h1>Planejador Gemini-Flow</h1>
       </header>
-      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <main>
         {appError && <p style={{ color: 'red' }}>Application Error: {appError}</p>}
 
         {!sessionData ? (

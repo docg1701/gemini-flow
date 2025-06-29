@@ -37,10 +37,10 @@ const ProjectNameInput: React.FC<ProjectNameInputProps> = ({ onSessionStart }) =
   };
 
   return (
-    <div>
+    <div className="project-name-input-form">
       <h2>Start a New Project</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="projectName">Project Name:</label>
           <input
             type="text"
@@ -55,7 +55,7 @@ const ProjectNameInput: React.FC<ProjectNameInputProps> = ({ onSessionStart }) =
           {isLoading ? 'Starting...' : 'Start Session'}
         </button>
       </form>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {error && <p className="error-message-form">Error: {error}</p>}
     </div>
   );
 };
