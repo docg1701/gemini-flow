@@ -1,8 +1,41 @@
-from fastapi import FastAPI, HTTPException
+import logging
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Any, Dict, Optional
 
+# Assuming google-generativeai might raise specific exceptions
+# We'll create a placeholder for now, actual exception type might differ
+try:
+    from google.api_core import exceptions as google_exceptions
+except ImportError:
+    # Placeholder if the exact exception isn't critical for this task's structure
+    class google_exceptions:
+        PermissionDenied = type("PermissionDenied", (Exception,), {})
+        GoogleAPIError = type("GoogleAPIError", (Exception,), {})
+
+
 from backend.orchestrator import Orchestrator, AppStates
+from backend.file_generator import create_project_structure_and_files # Added for bootstrap generation
+
+# --- Setup Logging ---
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) # Configure basic logging
+
+# --- Custom Exceptions ---
+class OrchestratorError(Exception):
+    """Custom exception for orchestrator specific errors."""
+    def __init__(self, message: str, error_code: str = "ORCHESTRATOR_ERROR"):
+        self.message = message
+        self.error_code = error_code
+        super().__init__(self.message)
+
+class GeminiAPIError(Exception):
+    """Custom exception for Gemini API related errors."""
+    def __init__(self, message: str, error_code: str = "GEMINI_API_ERROR"):
+        self.message = message
+        self.error_code = error_code
+        super().__init__(self.message)
 
 # --- Pydantic Models ---
 
@@ -42,6 +75,60 @@ app = FastAPI(
 )
 
 orchestrator = Orchestrator()
+
+# --- Exception Handlers ---
+
+@app.exception_handler(OrchestratorError)
+async def orchestrator_exception_handler(request: Request, exc: OrchestratorError):
+    logger.error(f"OrchestratorError: {exc.message} (Code: {exc.error_code})", exc_info=True)
+    return JSONResponse(
+        status_code=400, # Bad Request, could be 500 depending on the error nature
+        content={"detail": exc.message, "error_code": exc.error_code},
+    )
+
+@app.exception_handler(GeminiAPIError)
+async def gemini_api_exception_handler(request: Request, exc: GeminiAPIError):
+    logger.error(f"GeminiAPIError: {exc.message} (Code: {exc.error_code})", exc_info=True)
+    return JSONResponse(
+        status_code=502, # Bad Gateway, as it's an upstream API error
+        content={"detail": exc.message, "error_code": exc.error_code},
+    )
+
+@app.exception_handler(google_exceptions.PermissionDenied)
+async def google_permission_denied_handler(request: Request, exc: google_exceptions.PermissionDenied):
+    logger.error(f"Google API Permission Denied: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=502,
+        content={"detail": "Falha de permissão ao acessar a API do Google.", "error_code": "GOOGLE_PERMISSION_DENIED"},
+    )
+
+@app.exception_handler(google_exceptions.GoogleAPIError) # Generic Google API error
+async def google_api_error_handler(request: Request, exc: google_exceptions.GoogleAPIError):
+    logger.error(f"Google API Error: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=502,
+        content={"detail": "Erro na comunicação com a API do Google.", "error_code": "GOOGLE_API_ERROR"},
+    )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler_custom(request: Request, exc: HTTPException):
+    # This will handle FastAPI's own HTTPErrors if not caught by more specific handlers
+    # It allows logging them or standardizing the response further if needed.
+    # FastAPI's default handler for HTTPException already returns JSON.
+    logger.error(f"HTTPException: Status: {exc.status_code}, Detail: {exc.detail}", exc_info=False) # exc_info might be too verbose for standard HTTPExceptions
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail, "error_code": "HTTP_EXCEPTION"}, # Optionally add a generic error code
+        headers=exc.headers
+    )
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled Exception: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Ocorreu um erro interno inesperado no servidor.", "error_code": "INTERNAL_SERVER_ERROR"},
+    )
 
 # --- API Endpoints ---
 
@@ -116,21 +203,28 @@ async def approve_phase():
 @app.post("/generate_files", response_model=GenerateFilesResponse)
 async def generate_project_files():
     try:
-        # This logic ideally belongs in the orchestrator.
-        # orchestrator.prepare_for_generation() / orchestrator.generate_files()
-        if orchestrator.session.current_state == AppStates.DEVOPS: # Simplified check
-            # Actual file generation logic is missing in Orchestrator.py
-            # For now, returning a success message.
-            # project_files_data = orchestrator.generate_files_content() # Imaginary method
+        if orchestrator.session is None or not orchestrator.session.project_name:
+            raise HTTPException(status_code=400, detail="Nenhuma sessão de projeto ativa. Inicie um projeto primeiro.")
+
+        if orchestrator.session.current_state == AppStates.DEVOPS:
+            project_name = orchestrator.session.project_name
+            output_dir = create_project_structure_and_files(project_name)
+
+            # Here you would typically add other files to 'output_dir'
+            # For example, content from orchestrator.session.phases_data
+            # For now, only bootstrap.sh is created by create_project_structure_and_files
+
             return GenerateFilesResponse(
-                status="files_generated_successfully_simulated",
-                message=f"Arquivos do projeto '{orchestrator.session.project_name}' foram gerados (simulação)."
+                status="files_generated_successfully",
+                message=f"Arquivos do projeto '{project_name}', incluindo bootstrap.sh, foram gerados em: {output_dir}"
             )
         else:
             return GenerateFilesResponse(
                 status="not_ready_for_generation",
-                message="O projeto não está na fase final de aprovação para gerar arquivos."
+                message=f"O projeto não está na fase DEVOPS finalizada para gerar arquivos. Estado atual: {orchestrator.session.current_state.value if orchestrator.session else 'N/A'}"
             )
+    except HTTPException as e:
+        raise e # Re-raise HTTPException directly
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao gerar arquivos: {str(e)}")
 
