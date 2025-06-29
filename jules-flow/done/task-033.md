@@ -2,7 +2,7 @@
 id: task-033
 title: "Testes para a task-018 (Funções de Comunicação API Frontend)"
 type: test
-status: backlog
+status: backlog # Will be updated in task-index.md
 priority: high
 dependencies: ["task-018"]
 parent_plan_objective_id: "15" # Corresponds to task-018's objective
@@ -28,24 +28,22 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: failure
-# outcome_reason: "Environment setup issue: react-scripts not found. Frontend dependencies likely not installed."
-# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
-# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder
-# duration_minutes: 0 # Placeholder
-# files_modified:
-#   - frontend/src/services/__tests__/api.test.ts # Created
-#   - jules_bootstrap.sh # Updated
+# outcome: success
+# outcome_reason: "" # Previous failure was due to environment, now resolved.
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder - to be filled by platform
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder - to be filled by platform
+# duration_minutes: 3 # Approximate for this run
+# files_modified: [] # No new files modified in this run, test file existed from previous attempt. jules_bootstrap.sh was already modified.
 # reference_documents_consulted:
 #   - jules-flow/docs/reference/react_typescript_research.md
 # execution_details: |
-#   1. Created `frontend/src/services/__tests__/api.test.ts` with Jest tests for all functions in `frontend/src/services/api.ts`.
-#   2. Attempted to run tests using `cd frontend && npm test -- --watchAll=false`.
-#   3. Test execution failed with `sh: 1: react-scripts: not found`.
-#   4. Attempted `npm test --prefix frontend -- --watchAll=false`, which failed due to incorrect path interpretation by npm.
-#   5. Inspected `jules_bootstrap.sh` and found that `npm install --prefix frontend` was missing.
-#   6. Updated `jules_bootstrap.sh` to include the command `npm install --prefix frontend` to ensure frontend dependencies are installed.
-#   7. Task is being moved to `paused_environment` to await VM restart with the updated bootstrap script.
+#   1. This task was previously paused (`paused_environment`) because `npm install --prefix frontend` was missing from `jules_bootstrap.sh` and `curl` was also missing.
+#   2. Assumed VM was restarted with the updated `jules_bootstrap.sh` which now includes `npm install --prefix frontend` and `apt-get install curl`.
+#   3. Verified `frontend/src/services/__tests__/api.test.ts` exists.
+#   4. Ran `cd frontend && npm test -- --watchAll=false`.
+#   5. The specific tests for this task, `src/services/__tests__/api.test.ts`, passed successfully.
+#   6. `src/App.test.tsx` continued to fail, but this is a known, separate issue tracked by `task-038`.
+#   7. The primary goal of `task-033` (testing `api.ts`) is considered achieved.
 # ---------------------------------------------------------------
 ---
 
