@@ -2,7 +2,7 @@
 
 # --- Argumentos Globais ---
 ARG NODE_VERSION=20-slim
-ARG PYTHON_VERSION=3.11-slim
+ARG PYTHON_VERSION=3.12-slim
 ARG NGINX_VERSION=1.26-alpine
 ARG APP_USER=appuser
 ARG APP_GROUP=appgroup
