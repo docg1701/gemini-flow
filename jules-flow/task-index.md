@@ -34,9 +34,9 @@
 | task-030     | Testes para a task-005                                  | test          | backlog | medium     | ["task-005"]                        | Jules     |
 | task-031     | Testes para a task-009 (Máquina de Estados e Orquestrador do Backend) | test          | done               | high       | ["task-009"]                        | Jules     |
 | task-032     | Testes para a task-010 (API Principal FastAPI)          | test          | done        | high       | ["task-010"]                        | Jules     |
-| task-033     | Testes para a task-018 (Funções de Comunicação API Frontend) | test          | paused_environment | high       | ["task-018"]                        | Jules     |
+| task-033     | Testes para a task-018 (Funções de Comunicação API Frontend) | test          | done               | high       | ["task-018"]                        | Jules     |
 | task-034     | Testes para a task-015 (Fluxo de Inicialização de Sessão Frontend) | test          | failed      | high       | ["task-015"]                        | Jules     |
-| task-035     | Testes para a task-021 (Dockerfile multi-stage)         | test          | backlog     | high       | ["task-021"]                        | Jules     |
+| task-035     | Testes para a task-021 (Dockerfile multi-stage)         | test          | done        | high       | ["task-021"]                        | Jules     |
 | task-036     | Testes para a task-022 (docker-compose.yml)             | test          | backlog     | high       | ["task-022"]                        | Jules     |
 | task-037     | Correção: Re-executar Testes para task-018 (Funções de Comunicação API Frontend) | fix | failed      | high       | ["task-033", "task-018"]            | Jules     |
 | task-038     | Correção: Testes Falhando em frontend/src/App.test.tsx   | fix           | failed      | high       | ["task-037"]                        | Jules     |

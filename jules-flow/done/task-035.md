@@ -2,7 +2,7 @@
 id: task-035
 title: "Testes para a task-021 (Dockerfile multi-stage)"
 type: test
-status: backlog
+status: backlog # Will be updated in task-index.md
 priority: high
 dependencies: ["task-021"]
 parent_plan_objective_id: "18" # Corresponds to task-021's objective
@@ -20,15 +20,20 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder - to be filled by platform
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder - to be filled by platform
+# duration_minutes: 5 # Approximate
 # files_modified: []
-# reference_documents_consulted: []
+# reference_documents_consulted: ["jules-flow/docs/reference/docker_research.md"]
 # execution_details: |
-#   Detalhes da execução dos testes de build do Dockerfile.
+#   1. Executed `sudo docker build --target frontend-builder -t test-frontend-builder .` - Success.
+#   2. Executed `sudo docker build --target backend -t test-backend .` - Success.
+#   3. Executed `sudo docker build --target frontend -t test-frontend .` - Success.
+#   4. Verified image creation using `sudo docker images | grep -E "test-frontend-builder|test-backend|test-frontend"`. All images were present.
+#   5. Cleaned up test images using `sudo docker rmi test-frontend-builder test-backend test-frontend`. All images were removed.
+#   All acceptance criteria met.
 # ---------------------------------------------------------------
 ---
 
