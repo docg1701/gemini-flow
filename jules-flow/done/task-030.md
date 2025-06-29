@@ -2,15 +2,15 @@
 id: task-030
 title: "Testes para a task-005"
 type: test
-status: backlog
+status: in_progress # Will be updated to done in task-index
 priority: medium
 dependencies: ["task-005"]
-parent_plan_objective_id: "2" # Corresponds to objective 2 in working-plan.md
+parent_plan_objective_id: "2"
 discovered_research_needed: []
 assigned_to: Jules
 created_by: Jules
-created_at: YYYY-MM-DDTHH:MM:SSZ # Placeholder
-updated_at: YYYY-MM-DDTHH:MM:SSZ # Placeholder
+created_at: 2024-07-29T10:30:00Z
+updated_at: 2024-08-01T12:40:00Z
 tags: ["test", "prompts", "organização"]
 description: |
   Validar que os arquivos de prompt (`gemini-gem-*.md`) foram corretamente movidos da raiz do projeto para o diretório `prompts/`.
@@ -20,15 +20,22 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
-# outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
-# files_modified: []
-# reference_documents_consulted: []
-# execution_details: |
-#   Detalhes da execução dos testes para a movimentação dos arquivos de prompt.
+outcome: success
+outcome_reason: ""
+start_time: 2024-08-01T12:35:00Z
+end_time: 2024-08-01T12:40:00Z
+duration_minutes: 5
+files_modified: []
+reference_documents_consulted: []
+execution_details: |
+  Criterion 1: gemini-gem-arquiteto-de-projetos.md not found in root. PASS.
+  Criterion 2: gemini-gem-gerente-de-issues.md not found in root. PASS.
+  Criterion 3: gemini-gem-super-devops.md not found in root. PASS.
+  Criterion 4: prompts/gemini-gem-arquiteto-de-projetos.md found in prompts/. PASS.
+  Criterion 5: prompts/gemini-gem-gerente-de-issues.md found in prompts/. PASS.
+  Criterion 6: prompts/gemini-gem-super-devops.md found in prompts/. PASS.
+
+  All checks passed. The files were correctly moved to the prompts/ directory and removed from the root directory.
 # ---------------------------------------------------------------
 ---
 

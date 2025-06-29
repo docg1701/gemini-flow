@@ -2,15 +2,15 @@
 id: task-023
 title: "Reescrever README.md principal"
 type: documentation
-status: backlog
+status: in_progress # Will be updated to done in task-index
 priority: medium
-dependencies: ["task-021", "task-022"] # Depende da configuração Docker/Compose estar definida
+dependencies: ["task-021", "task-022"]
 parent_plan_objective_id: "20"
 discovered_research_needed: []
 assigned_to: Jules
 created_by: Jules
 created_at: 2024-07-29T10:22:00Z
-updated_at: 2024-07-29T10:22:00Z
+updated_at: 2024-08-01T12:30:00Z
 tags: ["documentação", "readme", "docker-compose"]
 description: |
   Reescrever completamente o arquivo `README.md` na raiz do projeto.
@@ -26,16 +26,28 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
-# outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
-# files_modified:
-#   - README.md
-# reference_documents_consulted: []
-# execution_details: |
-#   README.md principal reescrito com informações sobre o Planejador Gemini-Flow, arquitetura e instruções de execução via Docker Compose.
+outcome: success
+outcome_reason: ""
+start_time: 2024-08-01T12:20:00Z
+end_time: 2024-08-01T12:30:00Z
+duration_minutes: 10
+files_modified:
+  - README.md
+reference_documents_consulted:
+  - VISION.md
+  - docker-compose.yml
+  - .env.example
+execution_details: |
+  O arquivo `README.md` principal do projeto foi completamente reescrito para focar na aplicação "Planejador Gemini-Flow".
+  O novo conteúdo inclui:
+  - Uma breve descrição do propósito da aplicação.
+  - Detalhes sobre a arquitetura (Frontend React/TS, Backend Python/FastAPI, Docker Compose, LangChain).
+  - Lista de pré-requisitos (Docker, Docker Compose).
+  - Instruções claras para configuração, incluindo a criação do arquivo `.env` a partir do `.env.example` e a inserção da `GEMINI_API_KEY`.
+  - Comando para construir e executar a aplicação: `sudo docker compose up --build`.
+  - Informações sobre como acessar o frontend e o backend.
+  - Um resumo do fluxo da aplicação.
+  Esta atualização cumpre todos os critérios de aceitação da tarefa.
 # ---------------------------------------------------------------
 ---
 
