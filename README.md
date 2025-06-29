@@ -18,18 +18,29 @@ Antes de executar a aplicação, certifique-se de que você tem o seguinte softw
 *   [Docker](https://docs.docker.com/get-docker/)
 *   [Docker Compose](https://docs.docker.com/compose/install/) (geralmente incluído nas instalações mais recentes do Docker Desktop)
 
-## Configuração
+## Configuração do Ambiente
 
-1.  **Chave da API do Gemini:**
-    Este projeto requer uma chave da API do Google Gemini para interagir com os modelos de linguagem.
-    *   Copie o arquivo `.env.example` para um novo arquivo chamado `.env` na raiz do projeto:
-        ```bash
-        cp .env.example .env
-        ```
-    *   Abra o arquivo `.env` e substitua `SUA_CHAVE_AQUI` pela sua chave da API do Gemini:
-        ```
-        GEMINI_API_KEY=SUA_CHAVE_AQUI_REAL
-        ```
+Antes de executar a aplicação, você precisa configurar as variáveis de ambiente. O projeto utiliza um arquivo `.env` na raiz para gerenciar essas configurações.
+
+1.  **Criar o arquivo `.env`:**
+    Copie o arquivo de exemplo `.env.example` (localizado na raiz do projeto) para um novo arquivo chamado `.env`:
+    ```bash
+    cp .env.example .env
+    ```
+
+2.  **Configurar Variáveis no `.env`:**
+    Abra o arquivo `.env` recém-criado com um editor de texto. Ele contém todas as variáveis de ambiente necessárias para o backend, frontend e para o processo de build do Docker, com comentários explicando cada uma.
+
+    *   **Variável Obrigatória Principal:**
+        *   `GEMINI_API_KEY`: Você **deve** fornecer sua chave da API do Google Gemini aqui. Obtenha sua chave em [Google AI Studio](https://aistudio.google.com/app/apikey).
+          ```
+          GEMINI_API_KEY="SUA_CHAVE_API_REAL_AQUI"
+          ```
+
+    *   **Outras Variáveis (Opcionais/Padrões):**
+        *   Revise as outras variáveis no arquivo `.env`. Muitas delas têm valores padrão que funcionarão para desenvolvimento local (ex: `BACKEND_HOST_PORT=8000`, `FRONTEND_HOST_PORT=3000`).
+        *   Ajuste-as conforme necessário para o seu ambiente ou se quiser usar portas diferentes.
+        *   Variáveis como `DOCKER_NODE_VERSION`, `DOCKER_PYTHON_VERSION`, etc., controlam as versões das imagens base usadas na construção dos containers Docker.
 
 ## Como Executar a Aplicação
 

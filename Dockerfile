@@ -8,8 +8,10 @@ ARG APP_USER=appuser
 ARG APP_GROUP=appgroup
 
 # --- Labels Comuns ---
-#LABEL maintainer="Jules <jules@example.com>"
-#LABEL description="Aplicação Gemini-Flow (Backend Python/FastAPI e Frontend React/Nginx)"
+# LABEL maintainer="team" # Temporarily commented
+# LABEL description="app" # Temporarily commented
+# ARG APP_VERSION=0.1.0 # Example if versioning is introduced
+# LABEL version=${APP_VERSION}
 
 # ==============================================================================
 # Frontend Build Stage
@@ -64,7 +66,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
 
 # Instalar dependências do projeto COMO ROOT.
 # Poetry vai instalar os pacotes em um local do sistema que o appuser poderá ler.
-RUN poetry install --no-interaction --no-ansi --no-root
+# Using --without dev to exclude development dependencies for a leaner image.
+RUN poetry install --no-interaction --no-ansi --no-root --without dev
 # Remover .venv se criado acidentalmente
 RUN rm -rf /app/.venv
 

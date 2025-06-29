@@ -4,10 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
       target: backend_app
-      # args: # COMENTADO PARA TESTE
-      #   PYTHON_VERSION: ${DOCKER_PYTHON_VERSION}
-      #   APP_USER: ${BACKEND_APP_USER}
-      #   APP_GROUP: ${BACKEND_APP_GROUP}
+      args:
+        PYTHON_VERSION: ${DOCKER_PYTHON_VERSION}
+        APP_USER: ${BACKEND_APP_USER}
+        APP_GROUP: ${BACKEND_APP_GROUP}
     ports:
       - "${BACKEND_HOST_PORT}:${BACKEND_CONTAINER_PORT}"
     # environment:
