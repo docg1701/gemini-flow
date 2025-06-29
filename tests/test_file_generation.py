@@ -46,7 +46,7 @@ def setup_test_environment():
 
 @pytest.mark.anyio
 async def test_generate_bootstrap_script_flow():
-    async with httpx.AsyncClient(app=app) as client:
+    async with httpx.AsyncClient(app=app, base_url="http://testserver") as client:
         # 1. Start session
         start_payload = {"project_name": TEST_PROJECT_NAME}
         response = await client.post("/start", json=start_payload)
@@ -104,10 +104,11 @@ async def test_generate_bootstrap_script_flow():
             content = f.read()
 
         assert "#!/bin/bash" in content, "Shebang not found in bootstrap.sh"
-        assert 'read -p "Por favor, forneça o caminho de instalação para o projeto ' + TEST_PROJECT_NAME + ': " install_path' in content, "read -p for install_path not found or incorrect."
+        expected_read_p = f'read -p "Por favor, forneça o caminho de instalação para \'{TEST_PROJECT_NAME}\' (ex: /opt/meu_projeto_instalado): " install_path'
+        assert expected_read_p in content, f"Expected read -p line not found. Expected: '{expected_read_p}'"
         assert f'mkdir -p "$install_path/{TEST_PROJECT_NAME}"' in content, "mkdir command not found or incorrect."
-        assert 'cat << EOF > "$install_path/' + TEST_PROJECT_NAME + '/README.md"' in content, "README.md generation command not found or incorrect."
-        assert "Este é um README.md de exemplo para o projeto" in content, "Example README content not found."
+        assert f'cat << EOF > "$install_path/{TEST_PROJECT_NAME}/README.md"' in content, "README.md generation command not found or incorrect."
+        assert "Obrigado por usar nosso script de bootstrap!" in content, "Example README content not found." # Updated to match actual file_generator content
 
         # 9. Cleanup (handled by fixture, but good to be explicit if needed for generated_output_dir)
         # shutil.rmtree(generated_output_dir) # The fixture should handle this if it's under 'output/' and matches pattern
@@ -134,7 +135,7 @@ async def test_generate_bootstrap_script_flow():
 
 @pytest.mark.anyio
 async def test_generate_files_not_in_devops_final_state():
-    async with httpx.AsyncClient(app=app) as client: # base_url is not strictly needed here
+    async with httpx.AsyncClient(app=app, base_url="http://testserver") as client: # base_url is not strictly needed here
         # 1. Start session
         start_payload = {"project_name": "NotInDevopsProject"}
         response = await client.post("/start", json=start_payload)

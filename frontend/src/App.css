@@ -38,6 +38,72 @@ main {
   flex-grow: 1; /* Allows main content to expand */
 }
 
+/* Styles for ProjectNameInput form */
+.project-name-input-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9; /* Light background for the form area */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.project-name-input-form h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.project-name-input-form .form-group { /* Class for label-input pair */
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px; /* Limit width of input field container */
+}
+
+.project-name-input-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.project-name-input-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  box-sizing: border-box; /* Ensure padding doesn't expand width */
+}
+
+.project-name-input-form button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Blue for primary action */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.project-name-input-form button:disabled {
+  background-color: #a0c7e4; /* Lighter blue when disabled */
+  cursor: not-allowed;
+}
+
+.project-name-input-form .error-message-form { /* Specific error for this form */
+  color: #dc3545; /* Bootstrap's danger color */
+  margin-top: 10px;
+  font-size: 0.9em;
+  width: 100%;
+  max-width: 300px; /* Match input width */
+  text-align: center;
+}
+
+
 /* Basic styles for components if needed, can be moved to component-specific CSS later */
 .phase-indicator {
   padding: 12px;

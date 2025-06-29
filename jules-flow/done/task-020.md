@@ -2,7 +2,7 @@
 id: task-020
 title: "Aplicar estilo visual básico e limpo à aplicação frontend"
 type: development
-status: backlog
+status: backlog # This will be 'done' once in task-index.md
 priority: low
 dependencies: ["task-016"] # Depende da interface do chat construída
 parent_plan_objective_id: "17"
@@ -10,7 +10,7 @@ discovered_research_needed: []
 assigned_to: Jules
 created_by: Jules
 created_at: 2024-07-29T10:19:00Z
-updated_at: 2024-07-29T10:19:00Z
+updated_at: 2024-07-30T12:15:00Z # Updated to reflect completion time from report
 tags: ["frontend", "react", "css", "styling", "ui"]
 description: |
   No frontend React:
@@ -28,23 +28,27 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: 2024-07-30T12:00:00Z # Placeholder, actual time would be set by execution environment
+# end_time: 2024-07-30T12:15:00Z # Placeholder, actual time would be set by execution environment
+# duration_minutes: 15 # Placeholder
 # files_modified:
 #   - frontend/src/App.css
-#   # ou frontend/src/index.css
-#   # e possivelmente arquivos CSS modulares para componentes
-# reference_documents_consulted: ["react_typescript_research.md"]
+#   - frontend/src/App.tsx
+#   - frontend/src/components/ProjectNameInput.tsx
+# reference_documents_consulted: ["jules-flow/docs/reference/react_typescript_research.md"]
 # execution_details: |
-#   Estilos CSS básicos adicionados para melhorar a aparência e usabilidade da aplicação.
+#   - Revisei frontend/src/App.css e determinei que os estilos existentes para os componentes de chat eram adequados.
+#   - Modifiquei frontend/src/App.tsx para remover estilos inline para o elemento <main>, garantindo que ele use os estilos de App.css.
+#   - Adicionei novas classes CSS (.project-name-input-form, .form-group, .error-message-form) a frontend/src/App.css para estilizar o componente ProjectNameInput.
+#   - Modifiquei frontend/src/components/ProjectNameInput.tsx para aplicar as novas classes CSS, melhorando sua aparência e consistência com o restante da aplicação.
+#   - Os critérios de aceitação da tarefa foram atendidos.
 # ---------------------------------------------------------------
 ---
 
 ## Arquivos Relevantes (Escopo da Tarefa)
-* `frontend/src/App.css` (ou `frontend/src/index.css`) (saída)
+* `frontend/src/App.css` (saída)
 * `frontend/src/App.tsx` (e outros componentes, para aplicar classes CSS) (entrada/saída)
 
 ## Critérios de Aceitação
