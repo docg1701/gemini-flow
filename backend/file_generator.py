@@ -2,8 +2,8 @@ import datetime
 import os
 from typing import Optional
 
-# This global can be monkeypatched by tests to redirect output
-BASE_OUTPUT_DIR_FOR_TESTS: Optional[str] = None
+# Environment variable to indicate a test-specific output directory
+BASE_OUTPUT_DIR_FOR_TESTS_ENV_VAR = "JULES_TEST_OUTPUT_DIR"
 
 def generate_bootstrap_script(project_name: str) -> str:
     script_content = f"""#!/bin/bash
@@ -75,7 +75,10 @@ def create_project_structure_and_files(project_name: str, base_output_dir: str =
     Cria a estrutura de diretórios base para o projeto gerado e salva o bootstrap.sh.
     Retorna o caminho para o diretório do projeto gerado.
     """
-    current_base_output_dir = BASE_OUTPUT_DIR_FOR_TESTS if BASE_OUTPUT_DIR_FOR_TESTS is not None else base_output_dir
+    # Read env var here to ensure it's fresh for each call during tests
+    effective_test_output_dir = os.environ.get(BASE_OUTPUT_DIR_FOR_TESTS_ENV_VAR)
+
+    current_base_output_dir = effective_test_output_dir if effective_test_output_dir is not None else base_output_dir
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     # Sanitize project_name for directory path
