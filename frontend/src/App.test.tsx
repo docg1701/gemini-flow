@@ -63,38 +63,36 @@ describe('App Component Rendering', () => {
       const projectNameInput = screen.getByLabelText(/Project Name:/i);
       const startSessionButton = screen.getByRole('button', { name: /Start Session/i });
 
-      // Perform actions
-      await userEvent.type(projectNameInput, testProjectName);
-      await userEvent.click(startSessionButton); // Await the click
-
-      // Wait for mock and DOM updates
-      // Ensure the mock was called as expected from the click action.
-      await userEvent.click(startSessionButton); // Await the click
-
-      // After the click, explicitly wait for all promises to resolve and state updates to flush.
-      // This await act() with a microtask flush is a common pattern for stubborn async updates.
+      // Wrap the sequence of user interaction and the resulting async updates in act
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0)); // Flush microtasks/timers
+        await userEvent.type(projectNameInput, testProjectName);
+        await userEvent.click(startSessionButton);
+        // Wait for the mocked startSession promise to resolve,
+        // ensuring subsequent state updates within its chain are processed before act finishes.
+        if (mockApi.startSession.mock.results[0]) { // Ensure the function was called
+          await mockApi.startSession.mock.results[0].value;
+        }
       });
 
-      // Now, check assertions
-      await waitFor(() => expect(mockApi.startSession).toHaveBeenCalledTimes(1));
-      await waitFor(() => expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName }));
+      // Now, after act has completed, the state should be updated.
+      // Assertions can be made. Using findBy* for elements that appear asynchronously,
+      // and queryBy* for elements that should be gone.
 
-      await waitFor(() => {
-        expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
-      }, { timeout: 2000 }); // Give it a bit more time if needed
+      expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName });
+      expect(mockApi.startSession).toHaveBeenCalledTimes(1);
 
+      // Check that ProjectNameInput is hidden
+      expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/Project Name:/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /Start Session/i })).not.toBeInTheDocument();
+
+      // Check that ChatInterfacePlaceholder is visible with correct data
       const heading = await screen.findByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 });
       expect(heading).toBeInTheDocument();
 
       expect(await screen.findByText(`Current State: PLANNING`)).toBeInTheDocument();
       expect(await screen.findByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
       expect(await screen.findByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
-
-      // Final check that ProjectNameInput elements are definitely gone
-      expect(screen.queryByLabelText(/Project Name:/i)).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: /Start Session/i })).not.toBeInTheDocument();
     });
 
     // The old tests for specific components are no longer applicable

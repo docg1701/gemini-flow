@@ -43,4 +43,4 @@
 | task-039     | Testes para a task-012 (Geração de bootstrap.sh)        | test          | in_progress | medium     | ["task-012"]                        | Jules     |
 | task-040     | Testes para a task-013 (Tratamento de Erros no Backend) | test          | done        | medium     | ["task-013"]                        | Jules     |
 | task-041     | Testes para a task-019 (Implementar tratamento de erros no frontend) | test          | done        | medium     | ["task-019"]                        | Jules     |
-| task-042     | Testes para a task-020 (Aplicar estilo visual básico e limpo à aplicação frontend) | test | backlog | low        | ["task-020"]                        | Jules     |
+| task-042     | Testes para a task-020 (Aplicar estilo visual básico e limpo à aplicação frontend) | test | failed      | low        | ["task-020"]                        | Jules     |
