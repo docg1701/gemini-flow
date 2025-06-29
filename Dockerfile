@@ -79,6 +79,7 @@ RUN echo "--- DEBUG: Listando /app antes do chown final ---" && ls -la /app
 # Chown final de tudo em /app para appuser, EXECUTADO COMO ROOT
 RUN chown -R ${APP_USER}:${APP_GROUP} /app
 
+ENV PYTHONPATH=/app
 # Mudar para appuser para a execução do container (final)
 USER ${APP_USER}
 
