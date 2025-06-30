@@ -1,0 +1,100 @@
+# Docker Build Context Ignore List
+
+# Git files
+.git
+.gitignore
+.gitattributes
+.gitmodules
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local environment files (DO NOT ADD .env.example)
+.env
+*.env.*.local
+.env.local
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+# Local virtual environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+# Pytest cache
+.pytest_cache/
+pytest_cache/ # older versions
+.coverage
+.coverage.*
+htmlcov/
+# Poetry
+# poetry.lock and pyproject.toml are needed, but local .poetry directory or similar caches aren't
+# .poetry/ # If poetry is installed locally in project (not typical for this setup)
+
+# Node specific (for frontend, if copied from host context before npm ci)
+frontend/node_modules/
+frontend/build/ # This is built inside Docker, but ignore if present in host
+frontend/.DS_Store
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json # Playwright reports
+frontend/test-results/ # Playwright test results
+
+# General OS files
+.DS_Store
+Thumbs.db
+
+# Application specific outputs / logs
+output/
+*.log
+logs/
+# Jules-Flow specific files (not part of the application itself)
+jules-flow/
+jules_bootstrap.sh
+# Docker related files not needed inside the image context
+# (Dockerfile itself is used by the daemon, not copied by ADD/COPY unless specified)
+# .dockerignore # This file itself
+
+# Other
+LICENSE
+README.md
+VISION.md
+nginx.conf # This is explicitly COPIED in Dockerfile, so fine here
+# requirements.txt # If using this project, it's usually for local dev or alternative setups
+
+# Files and directories created by this application's tests or specific outputs
+# backend/output/ # This seems to be where generated test projects go
+# Test results
+frontend/test-results.json
+
+# Temporary files
+*.tmp
+*.bak
+*.patch

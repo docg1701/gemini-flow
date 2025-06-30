@@ -8,10 +8,18 @@ ARG APP_USER=appuser
 ARG APP_GROUP=appgroup
 
 # --- Labels Comuns ---
-# LABEL maintainer="team" # Temporarily commented
-# LABEL description="app" # Temporarily commented
-# ARG APP_VERSION=0.1.0 # Example if versioning is introduced
-# LABEL version=${APP_VERSION}
+ARG APP_VERSION=0.1.0 # Example, can be overridden or set in docker-compose build args
+LABEL org.opencontainers.image.title="Gemini-Flow Application"
+LABEL org.opencontainers.image.description="A multi-component application using FastAPI backend and React frontend, orchestrated by Gemini-Flow."
+LABEL org.opencontainers.image.version=${APP_VERSION}
+LABEL org.opencontainers.image.authors="Your Name/Team <your.email@example.com>"
+LABEL org.opencontainers.image.source="https://github.com/your-repo/gemini-flow"
+LABEL org.opencontainers.image.documentation="https://github.com/your-repo/gemini-flow/blob/main/README.md"
+LABEL org.opencontainers.image.vendor="Your Organization"
+# TODO: Update placeholder values in the LABELs above with actual maintainer, source repo, documentation, and vendor information.
+# LABEL maintainer="team" # Using OCI labels instead
+# LABEL description="app" # Using OCI labels instead
+# LABEL version=${APP_VERSION} # Using OCI labels instead
 
 # ==============================================================================
 # Frontend Build Stage
@@ -62,7 +70,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y curl \
     && mkdir -p "$POETRY_CACHE_DIR" \
     # Chown inicial para o diretório de trabalho e cache do poetry para appuser
     # Isso é feito antes do poetry install, mas poetry install ainda roda como root nesta versão
-    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_CACHE_DIR" "$POETRY_HOME"
+    # APP_USER does not need to own POETRY_HOME itself, only execute binaries from it.
+    && chown -R ${APP_USER}:${APP_GROUP} /app "$POETRY_CACHE_DIR"
 
 # Instalar dependências do projeto COMO ROOT.
 # Poetry vai instalar os pacotes em um local do sistema que o appuser poderá ler.
