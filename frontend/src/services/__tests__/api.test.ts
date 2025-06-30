@@ -42,7 +42,7 @@ describe('API Service', () => {
       const result = await startSession(mockPayload);
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith('/start', {
+      expect(mockFetch).toHaveBeenCalledWith('/api/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mockPayload),
@@ -95,7 +95,7 @@ describe('API Service', () => {
       const result = await sendMessage(mockPayload);
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith('/chat', {
+      expect(mockFetch).toHaveBeenCalledWith('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mockPayload),
@@ -132,7 +132,7 @@ describe('API Service', () => {
       const result = await approvePhase();
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith('/approve', {
+      expect(mockFetch).toHaveBeenCalledWith('/api/approve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // No body
@@ -168,7 +168,7 @@ describe('API Service', () => {
       const result = await generateFiles();
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith('/generate_files', {
+      expect(mockFetch).toHaveBeenCalledWith('/api/generate_files', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // No body

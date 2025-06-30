@@ -2,7 +2,7 @@
 id: task-043
 title: "Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker)"
 type: fix
-status: backlog # Atualizado para backlog ao mover
+status: done
 priority: high
 dependencies: ["task-034", "task-036", "task-038", "task-042"] # Referencing the failed tasks
 parent_plan_objective_id: null # This is a corrective task for multiple issues
@@ -36,26 +36,63 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: # pending, in_progress, success, failure
-# outcome_reason: # Se failure, descreva o motivo.
-# start_time: # YYYY-MM-DDTHH:MM:SSZ
+# outcome: success
+# outcome_reason: All frontend tests passed after App.test.tsx modifications. Backend ModuleNotFoundError was also resolved.
+# start_time: # YYYY-MM-DDTHH:MM:SSZ (when Co-Dev started for this task)
 # end_time: # YYYY-MM-DDTHH:MM:SSZ
 # duration_minutes: # Em minutos
 # files_modified:
-#   - # Lista de arquivos modificados, criados ou deletados
+#   - backend/main.py
+#   - backend/orchestrator.py
+#   - docker-compose.yml
+#   - frontend/package.json
+#   - frontend/src/services/__tests__/api.test.ts
+#   - frontend/src/App.test.tsx
 # reference_documents_consulted:
 #   - jules-flow/failed/task-034.md
 #   - jules-flow/failed/task-036.md
 #   - jules-flow/failed/task-038.md
 #   - jules-flow/failed/task-042.md
 #   - frontend/src/App.tsx
-#   - frontend/src/App.test.tsx
 #   - frontend/src/components/ProjectNameInput.tsx
-#   - Dockerfile
-#   - backend/main.py
 # execution_details: |
-#   # Log detalhado das ações tomadas, decisões, e resultados parciais.
-#   # Tarefa pausada para priorizar task-044 (Revisão de Configuração de Containerização).
+#   **Resumo da Sessão Co-Dev (até agora):**
+#
+#   1.  **Backend `ModuleNotFoundError`:**
+#       - Tentativa 1: Alterar imports para relativos (ex: `from .orchestrator`). Falhou com `ImportError: attempted relative import with no known parent package`.
+#       - Tentativa 2: Reverter para imports não relativos (ex: `from orchestrator`) E adicionar `PYTHONPATH=/app` ao serviço `backend` no `docker-compose.yml`.
+#       - **Resultado:** Sucesso! O backend iniciou corretamente no Docker.
+#
+#   2.  **Frontend `react-scripts: not found`:**
+#       - Causa: `react-scripts: "^0.0.0"` no `frontend/package.json` (provavelmente devido a um `npm audit fix --force` anterior).
+#       - Correção: Alterado para `react-scripts: "^5.0.1"` no `package.json`.
+#       - **Resultado:** Sucesso! Após `rm -rf node_modules package-lock.json && npm install`, o comando `npm test` passou a encontrar `react-scripts`.
+#
+#   3.  **Frontend `src/services/__tests__/api.test.ts` Falhas de URL:**
+#       - Causa: Testes esperavam URLs como `/start`, mas `api.ts` usa `API_BASE_URL = '/api'`, resultando em chamadas para `/api/start`.
+#       - Correção: Atualizadas as asserções `toHaveBeenCalledWith` em `api.test.ts` para incluir o prefixo `/api`.
+#       - **Resultado:** Sucesso! Os testes em `api.test.ts` agora passam.
+#
+#   4.  **Frontend `src/App.test.tsx` Falha Persistente e Avisos de `act(...)`:**
+#       - Problema: O teste que verifica a transição da UI após o início da sessão (`ProjectNameInput` -> `ChatInterfacePlaceholder`) continua falhando. O `ProjectNameInput` não desaparece. Avisos de `act(...)` também estavam presentes.
+#       - Tentativa 1 (minha): Refatorar o teste para remover `act` externo, confiando em `userEvent` e `findBy*`. Não resolveu a falha principal, mas os avisos de `act` sumiram do *output JSON*.
+#       - Tentativa 2 (minha, após usuário reportar que avisos de `act` voltaram no *console output*): Reintroduzir `act` com `await new Promise(setTimeout)` e `waitFor` explícito para desaparecimento. Não resolveu a falha principal (`ProjectNameInput` ainda visível).
+#       - Tentativa 3 (minha, aplicada agora): Reconfigurar o mock de `startSession` no início do teste e usar `await mockApi.startSession.mock.results[0].value;` dentro do `act` para garantir que a promise do mock seja totalmente processada.
+#
+#   **Estado Atual (Pausa para a Noite):**
+#   - Backend: Aparentemente corrigido e iniciando no Docker.
+#   - Frontend `api.test.ts`: Passando.
+#   - Frontend `App.test.tsx`: Última modificação aplicada (Tentativa 3 acima).
+#
+#   **Próximo Passo (Amanhã):**
+#   - Usuário fará `git pull` das últimas alterações (incluindo a Tentativa 3 para `App.test.tsx`).
+#   - Usuário rodará `npm test -- --watchAll=false --ci --json --outputFile=test-results.json` (ou `npm test`) no diretório `frontend/`.
+#   - Analisar os resultados para ver se `App.test.tsx` passou e se os avisos de `act(...)` foram resolvidos.
+#
+#   **Atualização Final da Sessão Co-Dev:**
+#   - O usuário executou os testes do frontend após as últimas modificações em `App.test.tsx`.
+#   - **Resultado:** SUCESSO! Todos os 4 conjuntos de testes passaram, incluindo `App.test.tsx`.
+#   - As correções no backend e frontend para a task-043 foram bem-sucedidas.
 # ---------------------------------------------------------------
 ---
 
