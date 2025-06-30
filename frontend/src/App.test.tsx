@@ -63,42 +63,40 @@ describe('App Component Rendering', () => {
       // For this isolated test, clearing it here is fine.
       mockApi.startSession.mockClear();
 
+      mockApi.startSession.mockClear();
+
       render(<App />);
       const projectNameInput = screen.getByLabelText(/Project Name:/i);
       const startSessionButton = screen.getByRole('button', { name: /Start Session/i });
 
-      // Simulate user typing and clicking
-      // No need for explicit outer act here for userEvent calls, RTL handles necessary act wrapping for them.
-      await userEvent.type(projectNameInput, testProjectName);
-      await userEvent.click(startSessionButton);
+      // Envolver a interação e a espera pela atualização de estado em act()
+      await act(async () => {
+        await userEvent.type(projectNameInput, testProjectName);
+        await userEvent.click(startSessionButton);
+        // Dê uma chance para a promise do mock resolver e as atualizações de estado iniciais ocorrerem
+        // Esta é uma pequena pausa para ajudar o scheduler do Jest/RTL
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
 
-      // At this point, startSession (mock) has been called.
-      // The component ProjectNameInput sets isLoading to true.
-      // Then, the mock startSession resolves, and onSessionStart (App's handleSessionStarted) is called.
-      // This calls setSessionData in App.
+      // Verificar se o mock foi chamado
+      expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName });
+      expect(mockApi.startSession).toHaveBeenCalledTimes(1);
 
-      // We need to wait for the effects of setSessionData.
-      // The most direct effect is the appearance of the new UI.
-
-      // Verify ChatInterfacePlaceholder appears (findBy* includes waitFor)
-      const heading = await screen.findByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 });
-      expect(heading).toBeInTheDocument();
-
-      // Once the new UI is confirmed, the old UI should be gone.
-      // These can now be checked synchronously with queryBy*
-      expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
+      // Esperar que o ProjectNameInput desapareça
+      await waitFor(() => {
+        expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
+      });
+      // Confirmar outros elementos do ProjectNameInput também sumiram
       expect(screen.queryByLabelText(/Project Name:/i)).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /Start Session/i })).not.toBeInTheDocument();
 
-      // Also verify other parts of ChatInterfacePlaceholder
-      // These getBy* are safe now because findBy* for the heading has already resolved.
+      // Agora, verificar se o ChatInterfacePlaceholder apareceu
+      const heading = await screen.findByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 });
+      expect(heading).toBeInTheDocument();
+
       expect(screen.getByText(`Current State: PLANNING`)).toBeInTheDocument();
       expect(screen.getByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
       expect(screen.getByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
-
-      // Verify mock call
-      expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName });
-      expect(mockApi.startSession).toHaveBeenCalledTimes(1);
     });
 
     // The old tests for specific components are no longer applicable
