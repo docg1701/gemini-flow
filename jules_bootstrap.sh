@@ -22,26 +22,26 @@ sudo apt-get -y -q install python3-pip python3-venv
 
 # Instalar Poetry (gerenciador de dependências Python)
 echo "Instalando Poetry..."
-# python3 -m pip install --user poetry # Será substituído pelo método oficial
+export POETRY_HOME="/opt/poetry"
 curl -sSL https://install.python-poetry.org | python3 -
+export PATH="$POETRY_HOME/bin:$PATH"
 
-# Adicionar/atualizar multidict para uma versão segura antes de instalar todas as dependências
-if [ -f "backend/pyproject.toml" ]; then
-  echo "Garantindo que multidict seja uma versão segura (<6.6.0)..."
-  ~/.local/bin/poetry -C backend add "multidict<6.6.0"
-fi
+# Configurar Poetry para não criar virtualenvs ou modificar o projeto
+# Essas configurações são mais relevantes para o Docker, mas podem ser setadas aqui para consistência
+# poetry config virtualenvs.create false # Removido - pode não ser desejável/necessário no bootstrap geral
+# poetry config virtualenvs.in-project false # Removido
+# poetry config virtualenvs.path null # Removido
+# poetry env use system # Removido - poetry decidirá ou usará o venv atual
+
+# A dependência 'multidict' e sua restrição de versão (<6.6.0) são gerenciadas
+# diretamente no arquivo backend/pyproject.toml.
+# O comando `poetry install` abaixo cuidará de sua instalação conforme definido.
+# Remover a tentativa explícita de 'poetry add multidict' daqui para evitar redundância.
 
 # Instalar dependências do backend com Poetry
 if [ -f "backend/pyproject.toml" ]; then
   echo "Instalando dependências do backend definidas em backend/pyproject.toml..."
-  # Executar poetry install de dentro do diretório backend
-  # ou usar -C para especificar o diretório do projeto Poetry
-  ~/.local/bin/poetry -C backend install --no-root # --no-root para não instalar o próprio projeto backend como editável, apenas deps
-  # Se o comando acima falhar por permissão, pode ser necessário configurar Poetry para criar venvs no projeto
-  # ou garantir que o usuário Jules tenha permissão para ~/.cache/pypoetry
-  # Exemplo alternativo se poetry global não for desejado:
-  # python3 -m pip install poetry
-  # python3 -m poetry -C backend install --no-root
+  poetry -C backend install --no-root # Usando poetry diretamente
 else
   echo "AVISO: backend/pyproject.toml não encontrado. Pulando instalação de dependências do backend."
 fi

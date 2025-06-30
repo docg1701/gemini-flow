@@ -49,3 +49,8 @@
 | task-011-test| Testes para a task-011 (is_approval_step)             | test          | done        | medium     | ["task-011"]                        | Jules     |
 | task-045     | Consolidated Fix: Verify and Resolve Frontend App.test.tsx Failures and Backend Docker ModuleError | fix           | done        | high       | ["task-034", "task-036", "task-038", "task-042", "task-043"] | Jules     |
 | task-DOC-001 | Atualizar documentação do projeto README.md             | documentation | done        | medium     | []                                  | Jules     |
+| task-REF-001 | Refatorar `jules_bootstrap.sh` e `Dockerfile` para consistência na instalação do Poetry | refactor | done        | medium     | []                                  | Jules     |
+| task-FIX-001 | Melhorar fallback de mensagem de erro em `frontend/src/services/api.ts` | fix      | done        | low        | []                                  | Jules     |
+| task-REF-002 | Refatorar configuração de PYTHONPATH em `run_tests.sh`    | refactor | done        | low        | []                                  | Jules     |
+| task-REF-003 | Refatorar lógica de aprovação e mensagem inicial de nova fase em `backend/main.py` | refactor | done        | medium     | []                                  | Jules     |
+| task-DOC-002 | Clarificar ou mover dependência `multidict<6.6.0` em `jules_bootstrap.sh` | documentation | done        | low        | []                                  | Jules     |

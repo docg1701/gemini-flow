@@ -75,10 +75,11 @@ if [ -d "${BACKEND_DIR}" ]; then
 
     log_action "Attempting to run backend/orchestrator.py internal tests (if __name__ == '__main__': block)"
     # Ensuring PROJECT_ROOT is in PYTHONPATH for 'from backend.config' to work, and running as a module
-    (export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" && cd "${PROJECT_ROOT}" && poetry --directory=backend run python -m backend.orchestrator) || log_warning "Execution of backend.orchestrator as module had issues. Check its output."
+    (export PYTHONPATH="${PROJECT_ROOT}" && cd "${PROJECT_ROOT}" && poetry --directory=backend run python -m backend.orchestrator) || log_warning "Execution of backend.orchestrator as module had issues. Check its output."
     log_success "Attempted to run orchestrator.py internal tests."
 
     log_action "Compiling backend/main.py (syntax and top-level imports)"
+    # No need to modify PYTHONPATH here as poetry run handles paths for compilation within its environment
     (cd "${BACKEND_DIR}" && poetry run python -m py_compile main.py) || log_error_exit "Compilation of backend/main.py failed."
     log_success "backend/main.py compiled successfully."
 
@@ -88,7 +89,7 @@ if [ -d "${BACKEND_DIR}" ]; then
 
     log_action "Attempting to start Uvicorn (simulated, to check app load)"
     cd "${PROJECT_ROOT}" # Ensure we are in project root for consistent pathing
-    export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" # Ensure backend module is findable
+    export PYTHONPATH="${PROJECT_ROOT}" # Ensure backend module is findable by Uvicorn when run this way
 
     log_action "Ensuring port 8000 is free..."
     # Attempt to kill any process listening on port 8000
@@ -122,8 +123,9 @@ if [ -d "${BACKEND_DIR}" ]; then
     # For this script, it's likely fine as frontend tests use npm in their own directory.
 
     log_action "Running backend PyTest tests"
-    # Running pytest from backend directory, with PROJECT_ROOT in PYTHONPATH for 'from backend.xxx' imports in tests
-    (export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH}" && cd "${BACKEND_DIR}" && poetry run pytest tests/) || log_warning "PyTest backend tests failed or had issues."
+    # Running pytest from backend directory. Poetry run should handle PYTHONPATH correctly for tests.
+    # If not, setting PYTHONPATH="${PROJECT_ROOT}" within the subshell is the cleaner way.
+    (export PYTHONPATH="${PROJECT_ROOT}" && cd "${BACKEND_DIR}" && poetry run pytest tests/) || log_warning "PyTest backend tests failed or had issues."
     log_success "PyTest backend tests executed."
 
     log_action "Returning to project root: ${PROJECT_ROOT}"
