@@ -15,8 +15,8 @@ except ImportError:
         GoogleAPIError = type("GoogleAPIError", (Exception,), {})
 
 
-from orchestrator import Orchestrator, AppStates
-from file_generator import create_project_structure_and_files # Added for bootstrap generation
+from backend.orchestrator import Orchestrator, AppStates
+from backend.file_generator import create_project_structure_and_files # Added for bootstrap generation
 
 # --- Setup Logging ---
 logger = logging.getLogger(__name__)
@@ -176,16 +176,17 @@ async def approve_phase():
         next_state_enum = next_state_map.get(current_state_before_approve)
 
         if next_state_enum:
-            change_response = orchestrator.change_phase(next_state_enum.name)
-            # Get the first AI message for the new phase
-            new_phase_initial_interaction = orchestrator.process_user_message(f"Ok, aprovei a fase anterior. O que faremos em {next_state_enum.value}?")
+            change_response = orchestrator.change_phase(next_state_enum.name) # This now returns the initial message for the new phase
 
+            # The 'message' in change_response is now the initial AI/system message for the new phase
             return ApproveResponse(
-                status=change_response["status"],
+                status=change_response["status"], # Should be "state_changed"
                 new_state=change_response["new_state"],
-                message=new_phase_initial_interaction["ai_response"]
+                message=change_response["message"] # Directly use the message from change_phase
             )
         elif current_state_before_approve == AppStates.DEVOPS:
+            # Special handling for when DEVOPS phase is approved (final phase before generation)
+            # No state change here, but a message indicating readiness for file generation.
             return ApproveResponse(
                 status="phase_approved_ready_to_generate",
                 new_state=current_state_before_approve.value,

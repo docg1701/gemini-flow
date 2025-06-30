@@ -70,7 +70,7 @@ export class APIError extends Error {
 async function handleApiResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let errorJson: any = null;
-    let errorMessage = `HTTP error! Status: ${response.status} ${response.statusText || ''}`.trim();
+    let errorMessage = '';
     let errorCode: string | undefined = undefined;
 
     try {
@@ -83,9 +83,17 @@ async function handleApiResponse<T>(response: Response): Promise<T> {
       }
     } catch (e) {
       // Response was not JSON or error parsing JSON.
-      // errorMessage is already set to a default from response.statusText.
-      // If response.statusText is also empty, it falls back to the generic HTTP error message.
+      // Fallback to statusText or a generic message.
     }
+
+    if (!errorMessage) {
+      // If errorJson.detail was not present or JSON parsing failed
+      errorMessage = response.statusText || `An unexpected error occurred (HTTP ${response.status})`;
+    }
+
+    // Trim any whitespace just in case
+    errorMessage = errorMessage.trim();
+
     throw new APIError(errorMessage, response.status, errorCode, errorJson);
   }
   return response.json() as Promise<T>;

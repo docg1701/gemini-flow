@@ -267,8 +267,12 @@ def test_chat_is_approval_step_logic():
     chat_in_issues_json = chat_in_issues_response.json()
     assert chat_in_issues_json["current_state"] == AppStates.ISSUES.value
     assert chat_in_issues_json["is_approval_step"] == False, "is_approval_step should be False in ISSUES"
-    # History: 4 (PLANNING) + 1 (sys ISSUES) + 2 (approve ISSUES interaction) + 2 (this chat) = 9
-    assert chat_in_issues_json["history_length"] == 9
+    # History:
+    # Initial /start: "Olá!..." (user) + AI response (2)
+    # /chat in PLANNING: "My first actual..." (user) + AI response (2) -> Total 4
+    # /approve to ISSUES: session.change_state adds system message (1) -> Total 5. No explicit user/AI message pair here anymore.
+    # /chat in ISSUES: "My first message..." (user) + AI response (2) -> Total 7
+    assert chat_in_issues_json["history_length"] == 7
 
     # 3. Approve to DEVOPS
     approve_to_devops_response = client.post("/approve")
@@ -284,12 +288,13 @@ def test_chat_is_approval_step_logic():
     # History after /approve to DEVOPS:
     # - History before this /approve: 9
     # - change_state to DEVOPS: +1 system message (total 10)
-    # - process_user_message for "Ok, aprovei...DEVOPS": +2 (user, assistant) (total 12)
+        # - History from ISSUES phase was 7.
+        # - /approve to DEVOPS: session.change_state adds system message (1) -> Total 7 + 1 = 8
     # Now, this chat_in_devops_response1:
-    # - process_user_message for "My first message in DEVOPS.": +2 (user, assistant) (total 14)
-    # Current state is DEVOPS, history length is 14. 14 > 5 is True.
+        # - process_user_message for "My first message in DEVOPS.": +2 (user, assistant) -> Total 8 + 2 = 10
+        # Current state is DEVOPS, history length is 10. 10 > 5 is True for is_approval_step.
     assert chat_in_devops_json1["is_approval_step"] == True, "is_approval_step should be True in DEVOPS after entering"
-    assert chat_in_devops_json1["history_length"] == 14
+    assert chat_in_devops_json1["history_length"] == 10
 
     # Send a few more messages in DEVOPS to ensure it stays true
     chat_in_devops_response2 = client.post("/chat", json={"user_message": "My second message in DEVOPS."})
@@ -297,8 +302,8 @@ def test_chat_is_approval_step_logic():
     chat_in_devops_json2 = chat_in_devops_response2.json()
     assert chat_in_devops_json2["current_state"] == AppStates.DEVOPS.value
     assert chat_in_devops_json2["is_approval_step"] == True, "is_approval_step should remain True in DEVOPS"
-    # History: 14 + 2 = 16
-    assert chat_in_devops_json2["history_length"] == 16
+    # History: 10 + 2 = 12
+    assert chat_in_devops_json2["history_length"] == 12
 
     # Test the other condition for requires_approval: last AI message contains "[APROVAR AGORA]"
     # This requires mocking the AI response or having more control over the orchestrator.

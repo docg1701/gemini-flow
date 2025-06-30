@@ -147,7 +147,8 @@ class TestOrchestrator:
         assert response["status"] == "state_changed"
         assert response["new_state"] == AppStates.ISSUES.value
         assert orchestrator.session.current_state == AppStates.ISSUES
-        assert PROMPT_FILES[AppStates.ISSUES] in response["message"]
+        # Check if the start of the ISSUES prompt content is in the message
+        assert "# Contexto Fundamental e Conhecimento Prévio" in response["message"]
         # History: 1 system message from change_state
         assert len(orchestrator.session.conversation_history) == 1
 

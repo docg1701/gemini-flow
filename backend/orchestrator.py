@@ -3,7 +3,7 @@ import os
 from typing import List, Dict, Any
 # from langchain_google_genai import ChatGoogleGenerativeAI # Will be uncommented when used
 # from langchain.schema import HumanMessage, AIMessage, SystemMessage # Will be uncommented when used
-from config import settings
+from backend.config import settings
 
 # Define os estados da aplicação
 class AppStates(Enum):
@@ -61,6 +61,11 @@ class SessionManager:
                 "role": "system",
                 "content": f"Estado da aplicação alterado para: {self.current_state.value}. Novo prompt carregado."
             })
+        # Return the introductory part of the prompt or a specific system message
+        # For now, returning a generic message related to the new prompt template.
+        # This could be the prompt template itself, or a predefined intro message.
+        return f"Novo prompt para {self.current_state.value} carregado. {self.current_prompt_template.splitlines()[0]}"
+
 
     def add_message_to_history(self, role: str, content: str):
         """Adiciona uma mensagem ao histórico da conversa."""
@@ -132,14 +137,24 @@ class Orchestrator:
         }
 
     def change_phase(self, new_phase_name: str) -> Dict[str, Any]:
-        """Muda a fase (estado) da aplicação."""
+        """Muda a fase (estado) da aplicação e retorna a mensagem inicial da nova fase."""
         try:
-            new_state = AppStates[new_phase_name.upper()]
-            self.session.change_state(new_state)
+            new_state_enum = AppStates[new_phase_name.upper()]
+            initial_message_for_new_phase = self.session.change_state(new_state_enum) # change_state now returns a message
+
+            # Simulate an initial AI response for the new phase based on its loaded prompt
+            # This is a placeholder; a real LLM call would be better.
+            # For now, we use the message returned by session.change_state directly or a derivative.
+            # Let's assume the initial_message_for_new_phase is suitable as the first "AI" message.
+
+            # We might also want to add this initial message to history as a system or AI message.
+            # For now, let's make the returned 'message' be this initial prompt/message.
+            # The frontend will display this as the first message from the AI in the new phase.
+
             return {
                 "status": "state_changed",
                 "new_state": self.session.current_state.value,
-                "message": f"Estado alterado para {self.session.current_state.value}. Prompt de {PROMPT_FILES.get(self.session.current_state)} carregado."
+                "message": initial_message_for_new_phase # This is the key change
             }
         except KeyError:
             return {
