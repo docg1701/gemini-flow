@@ -1,9 +1,9 @@
 // frontend/src/services/api.ts
 
 // Define a base URL for the API.
-// If using CRA proxy, relative paths like '/start' are fine.
-// Otherwise, use the full URL: 'http://localhost:8000'
-const API_BASE_URL = ''; // Using relative paths for CRA proxy
+// API calls will be proxied by Nginx to the backend.
+// All API calls should be prefixed with /api
+const API_BASE_URL = '/api';
 
 // --- TypeScript interfaces for API payloads and responses ---
 // These should mirror the Pydantic models in backend/main.py
