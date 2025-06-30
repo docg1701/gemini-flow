@@ -59,40 +59,46 @@ describe('App Component Rendering', () => {
       const mockApi = require('./services/api');
       mockApi.startSession.mockClear(); // Clear for this specific test, as it's self-contained.
 
+      // It's better to mockClear before each test or in a beforeEach if the mock is shared.
+      // For this isolated test, clearing it here is fine.
+      mockApi.startSession.mockClear();
+
       render(<App />);
       const projectNameInput = screen.getByLabelText(/Project Name:/i);
       const startSessionButton = screen.getByRole('button', { name: /Start Session/i });
 
-      // Wrap the sequence of user interaction and the resulting async updates in act
-      await act(async () => {
-        await userEvent.type(projectNameInput, testProjectName);
-        await userEvent.click(startSessionButton);
-        // Wait for the mocked startSession promise to resolve,
-        // ensuring subsequent state updates within its chain are processed before act finishes.
-        if (mockApi.startSession.mock.results[0]) { // Ensure the function was called
-          await mockApi.startSession.mock.results[0].value;
-        }
-      });
+      // Simulate user typing and clicking
+      // No need for explicit outer act here for userEvent calls, RTL handles necessary act wrapping for them.
+      await userEvent.type(projectNameInput, testProjectName);
+      await userEvent.click(startSessionButton);
 
-      // Now, after act has completed, the state should be updated.
-      // Assertions can be made. Using findBy* for elements that appear asynchronously,
-      // and queryBy* for elements that should be gone.
+      // At this point, startSession (mock) has been called.
+      // The component ProjectNameInput sets isLoading to true.
+      // Then, the mock startSession resolves, and onSessionStart (App's handleSessionStarted) is called.
+      // This calls setSessionData in App.
 
-      expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName });
-      expect(mockApi.startSession).toHaveBeenCalledTimes(1);
+      // We need to wait for the effects of setSessionData.
+      // The most direct effect is the appearance of the new UI.
 
-      // Check that ProjectNameInput is hidden
+      // Verify ChatInterfacePlaceholder appears (findBy* includes waitFor)
+      const heading = await screen.findByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 });
+      expect(heading).toBeInTheDocument();
+
+      // Once the new UI is confirmed, the old UI should be gone.
+      // These can now be checked synchronously with queryBy*
       expect(screen.queryByRole('heading', { name: /Start a New Project/i, level: 2 })).not.toBeInTheDocument();
       expect(screen.queryByLabelText(/Project Name:/i)).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /Start Session/i })).not.toBeInTheDocument();
 
-      // Check that ChatInterfacePlaceholder is visible with correct data
-      const heading = await screen.findByRole('heading', { name: `Chat Interface for: ${testProjectName}`, level: 2 });
-      expect(heading).toBeInTheDocument();
+      // Also verify other parts of ChatInterfacePlaceholder
+      // These getBy* are safe now because findBy* for the heading has already resolved.
+      expect(screen.getByText(`Current State: PLANNING`)).toBeInTheDocument();
+      expect(screen.getByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
+      expect(screen.getByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
 
-      expect(await screen.findByText(`Current State: PLANNING`)).toBeInTheDocument();
-      expect(await screen.findByText(/Initial AI Message: Mensagem recebida: 'Olá! Vamos começar o planejamento do projeto.'/i)).toBeInTheDocument();
-      expect(await screen.findByText(/\(Full chat UI will be implemented in task-016\)/i)).toBeInTheDocument();
+      // Verify mock call
+      expect(mockApi.startSession).toHaveBeenCalledWith({ project_name: testProjectName });
+      expect(mockApi.startSession).toHaveBeenCalledTimes(1);
     });
 
     // The old tests for specific components are no longer applicable

@@ -3,7 +3,7 @@ import os
 from typing import List, Dict, Any
 # from langchain_google_genai import ChatGoogleGenerativeAI # Will be uncommented when used
 # from langchain.schema import HumanMessage, AIMessage, SystemMessage # Will be uncommented when used
-from config import settings
+from .config import settings
 
 # Define os estados da aplicação
 class AppStates(Enum):
