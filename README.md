@@ -54,12 +54,19 @@ Com o Docker e o Docker Compose instalados e o arquivo `.env` configurado:
     Este comando irá construir as imagens Docker para o frontend e o backend (se ainda não estiverem construídas ou se houver alterações) e, em seguida, iniciará os serviços. O `sudo` pode ser necessário dependendo da configuração do seu Docker.
 
 2.  **Acessar a Aplicação:**
-    *   O **Frontend** estará acessível em: `http://localhost:3000`. As chamadas da API do frontend para o backend (ex: `/api/start`) são automaticamente roteadas pelo Nginx para o serviço de backend.
-    *   O **Backend API** (para acesso direto ou via ferramentas como curl/Postman) estará acessível em: `http://localhost:8000`. A documentação interativa da API (Swagger UI) está disponível em `http://localhost:8000/docs`.
+    *   O **Frontend** estará acessível em: `http://localhost:3000`. As chamadas da API do frontend para o backend (prefixadas com `/api`, como `/api/start`) são automaticamente roteadas pelo Nginx para o serviço de backend.
+    *   O **Backend API** (para acesso direto ou via ferramentas como curl/Postman) estará acessível em: `http://localhost:8000`. A documentação interativa da API (Swagger UI), detalhando todos os endpoints, está disponível em `http://localhost:8000/docs`.
+
+    Principais Endpoints da API do Backend:
+    *   `GET /health`: Verifica a saúde da aplicação backend.
+    *   `POST /start`: Inicia uma nova sessão de planejamento com um nome de projeto.
+    *   `POST /chat`: Envia uma mensagem do usuário para a IA e recebe a resposta.
+    *   `POST /approve`: Aprova a fase atual e avança para a próxima, ou finaliza o processo.
+    *   `POST /generate_files`: (Após a fase final de DevOps) Gera os artefatos do projeto, incluindo o script `bootstrap.sh`.
 
     *Nota sobre Nomes dos Containers:* Os containers Docker terão nomes como `geminiflow-backend-1` e `geminiflow-frontend-1`. O nome base (`geminiflow`) pode ser customizado através da variável `PROJECT_NAME` no seu arquivo `.env`.
 
-    *Nota sobre Builds da Imagem:* O `Dockerfile` agora inclui labels OCI (Open Container Initiative) para metadados. Se você estiver modificando o Dockerfile e construindo imagens para distribuição, por favor, atualize os valores de placeholder nas labels (ex: autor, URL do repositório).
+    *Nota sobre Builds da Imagem:* O `Dockerfile` utiliza uma abordagem multi-stage para otimizar as imagens finais e inclui labels OCI (Open Container Initiative) para metadados. Se você estiver modificando o Dockerfile e construindo imagens para distribuição, por favor, atualize os valores de placeholder nas labels (ex: autor, URL do repositório).
 
 3.  **Parar a Aplicação:**
     Para parar os containers, pressione `Ctrl+C` no terminal onde o `docker compose up` está rodando. Para remover os containers (e redes), você pode usar:

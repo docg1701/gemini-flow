@@ -48,3 +48,4 @@
 | task-044     | Revisão e Melhoria da Configuração de Containerização e Ambiente | refactor      | done        | high       | []                                  | Jules     |
 | task-011-test| Testes para a task-011 (is_approval_step)             | test          | done        | medium     | ["task-011"]                        | Jules     |
 | task-045     | Consolidated Fix: Verify and Resolve Frontend App.test.tsx Failures and Backend Docker ModuleError | fix           | done        | high       | ["task-034", "task-036", "task-038", "task-042", "task-043"] | Jules     |
+| task-DOC-001 | Atualizar documentação do projeto README.md             | documentation | done        | medium     | []                                  | Jules     |
