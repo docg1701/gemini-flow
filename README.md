@@ -29,18 +29,18 @@ Antes de executar a aplicação, você precisa configurar as variáveis de ambie
     ```
 
 2.  **Configurar Variáveis no `.env`:**
-    Abra o arquivo `.env` recém-criado com um editor de texto. Ele contém todas as variáveis de ambiente necessárias para o backend, frontend e para o processo de build do Docker, com comentários explicando cada uma.
+    Abra o arquivo `.env` recém-criado com um editor de texto. **Consulte o arquivo `.env.example` original para uma lista completa de todas as variáveis de ambiente disponíveis e seus propósitos detalhados**, que abrangem configurações para o backend, frontend e o processo de build do Docker. O `.env.example` é a fonte da verdade para estas configurações.
 
     *   **Variável Obrigatória Principal:**
-        *   `GEMINI_API_KEY`: Você **deve** fornecer sua chave da API do Google Gemini aqui. Obtenha sua chave em [Google AI Studio](https://aistudio.google.com/app/apikey).
+        *   `GEMINI_API_KEY`: Você **deve** fornecer sua chave da API do Google Gemini. Conforme descrito no `.env.example`, obtenha sua chave em [Google AI Studio](https://aistudio.google.com/app/apikey) e defina-a no seu arquivo `.env`:
           ```
           GEMINI_API_KEY="SUA_CHAVE_API_REAL_AQUI"
           ```
 
     *   **Outras Variáveis (Opcionais/Padrões):**
-        *   Revise as outras variáveis no arquivo `.env`. Muitas delas têm valores padrão que funcionarão para desenvolvimento local (ex: `BACKEND_HOST_PORT=8000`, `FRONTEND_HOST_PORT=3000`).
-        *   Ajuste-as conforme necessário para o seu ambiente ou se quiser usar portas diferentes.
-        *   Variáveis como `DOCKER_NODE_VERSION`, `DOCKER_PYTHON_VERSION`, etc., controlam as versões das imagens base usadas na construção dos containers Docker.
+        *   Revise todas as outras variáveis no `.env.example` e copie/ajuste as que necessitar para o seu arquivo `.env`. Muitas delas têm valores padrão (ou estão comentadas no `.env.example`) que são adequados para desenvolvimento local (ex: `BACKEND_HOST_PORT=8000`, `FRONTEND_HOST_PORT=3000`).
+        *   Ajuste as portas ou outras configurações no seu `.env` conforme necessário para o seu ambiente.
+        *   Variáveis como `DOCKER_NODE_VERSION`, `DOCKER_PYTHON_VERSION` (definidas no `.env.example` e usadas no `docker-compose.yml`) controlam as versões das imagens base usadas na construção dos containers Docker.
 
 ## Como Executar a Aplicação
 
