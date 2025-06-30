@@ -47,4 +47,4 @@
 | task-043     | Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker) | fix | done        | high       | ["task-034", "task-036", "task-038", "task-042"] | Jules     |
 | task-044     | Revisão e Melhoria da Configuração de Containerização e Ambiente | refactor      | done        | high       | []                                  | Jules     |
 | task-011-test| Testes para a task-011 (is_approval_step)             | test          | done        | medium     | ["task-011"]                        | Jules     |
-| task-045     | Consolidated Fix: Verify and Resolve Frontend App.test.tsx Failures and Backend Docker ModuleError | fix           | backlog     | high       | ["task-034", "task-036", "task-038", "task-042", "task-043"] | Jules     |
+| task-045     | Consolidated Fix: Verify and Resolve Frontend App.test.tsx Failures and Backend Docker ModuleError | fix           | done        | high       | ["task-034", "task-036", "task-038", "task-042", "task-043"] | Jules     |
