@@ -2,7 +2,7 @@
 id: task-034
 title: "Testes para a task-015 (Fluxo de Inicialização de Sessão Frontend)"
 type: test
-status: backlog
+status: backlog # Will be updated to 'done' in task-index.md
 priority: high
 dependencies: ["task-015"]
 parent_plan_objective_id: "12" # Corresponds to task-015's objective
@@ -10,7 +10,7 @@ discovered_research_needed: []
 assigned_to: Jules
 created_by: Jules
 created_at: 2024-07-30T16:30:00Z # Placeholder time
-updated_at: 2024-07-30T16:30:00Z # Placeholder time
+updated_at: 2024-08-01T12:30:00Z # Placeholder time - updated
 tags: ["frontend", "test", "react", "typescript", "ui", "session", "rtl"]
 description: |
   Esta tarefa visa criar e executar testes de componentes para o fluxo de inicialização de sessão implementado na `task-015`.
@@ -31,8 +31,8 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: failure
-# outcome_reason: "Criterion 5 (All frontend tests pass) not met. `frontend/src/App.test.tsx` continues to fail on session initialization tests despite new tests for `ProjectNameInput.tsx` passing."
+# outcome: success # Original: failure
+# outcome_reason: "Issues originally causing failure were resolved by task-043 and verified in task-045. Frontend tests related to App.test.tsx now pass." # Original: "Criterion 5 (All frontend tests pass) not met. `frontend/src/App.test.tsx` continues to fail on session initialization tests despite new tests for `ProjectNameInput.tsx` passing."
 # start_time: 2024-07-31T12:00:00Z # Approximate
 # end_time: 2024-07-31T12:30:00Z # Approximate
 # duration_minutes: 30
@@ -42,7 +42,9 @@ description: |
 #   - frontend/test-results.json # Updated
 # reference_documents_consulted:
 #   - jules-flow/failed/task-038.md # For context on App.test.tsx issues
+#   - jules-flow/done/task-045.md # For resolution details
 # execution_details: |
+#   Original Execution:
 #   1. Reverted `startSession` mock in `frontend/src/App.test.tsx` to its original async version.
 #   2. Created new test suite `frontend/src/components/__tests__/ProjectNameInput.test.tsx`.
 #      - Added tests for initial render, typing, empty submit error, successful submission (mocked API, callback), loading state, and API error display.
@@ -52,6 +54,11 @@ description: |
 #      - `frontend/src/components/__tests__/ProjectNameInput.test.tsx` PASSED.
 #      - `frontend/src/App.test.tsx` FAILED (same issue as in task-038: ProjectNameInput not hidden, ChatInterfacePlaceholder not shown, persistent `act` warnings).
 #   5. Since `App.test.tsx` still fails, the overall acceptance criterion "Os testes passam com sucesso" for task-034 is not met.
+#
+#   Post-task-045 Note:
+#   The failures in `App.test.tsx` were addressed by fixes implemented in `task-043` (related to `react-scripts` version, API mock handling, and `act` warnings)
+#   and verified during `task-045` (which also included ensuring `node_modules` were correctly installed).
+#   With these fixes, the conditions for this task's success are now met.
 # ---------------------------------------------------------------
 ---
 
