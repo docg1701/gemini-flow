@@ -7,15 +7,15 @@ ARG NGINX_VERSION=1.26-alpine
 ARG APP_USER=appuser
 ARG APP_GROUP=appgroup
 
-# --- Labels Comuns ---
-ARG APP_VERSION=0.1.0 # Example, can be overridden or set in docker-compose build args
-LABEL org.opencontainers.image.title="Gemini-Flow Application"
-LABEL org.opencontainers.image.description="A multi-component application using FastAPI backend and React frontend, orchestrated by Gemini-Flow."
-LABEL org.opencontainers.image.version=${APP_VERSION}
-LABEL org.opencontainers.image.authors="Your Name/Team <your.email@example.com>"
-LABEL org.opencontainers.image.source="https://github.com/your-repo/gemini-flow"
-LABEL org.opencontainers.image.documentation="https://github.com/your-repo/gemini-flow/blob/main/README.md"
-LABEL org.opencontainers.image.vendor="Your Organization"
+# --- Labels Comuns (Temporariamente Comentadas para Teste) ---
+# ARG APP_VERSION=0.1.0 # Example, can be overridden or set in docker-compose build args
+# LABEL org.opencontainers.image.title="Gemini-Flow Application"
+# LABEL org.opencontainers.image.description="A multi-component application using FastAPI backend and React frontend, orchestrated by Gemini-Flow."
+# LABEL org.opencontainers.image.version=${APP_VERSION}
+# LABEL org.opencontainers.image.authors="Your Name/Team <your.email@example.com>"
+# LABEL org.opencontainers.image.source="https://github.com/your-repo/gemini-flow"
+# LABEL org.opencontainers.image.documentation="https://github.com/your-repo/gemini-flow/blob/main/README.md"
+# LABEL org.opencontainers.image.vendor="Your Organization"
 # TODO: Update placeholder values in the LABELs above with actual maintainer, source repo, documentation, and vendor information.
 # LABEL maintainer="team" # Using OCI labels instead
 # LABEL description="app" # Using OCI labels instead
