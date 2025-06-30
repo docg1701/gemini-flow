@@ -44,6 +44,6 @@
 | task-040     | Testes para a task-013 (Tratamento de Erros no Backend) | test          | done        | medium     | ["task-013"]                        | Jules     |
 | task-041     | Testes para a task-019 (Implementar tratamento de erros no frontend) | test          | done        | medium     | ["task-019"]                        | Jules     |
 | task-042     | Testes para a task-020 (Aplicar estilo visual básico e limpo à aplicação frontend) | test | failed      | low        | ["task-020"]                        | Jules     |
-| task-043     | Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker) | fix | backlog     | high       | ["task-034", "task-036", "task-038", "task-042"] | Jules     |
+| task-043     | Correção Agrupada: Falhas em Testes Frontend (App.test.tsx) e Inicialização do Backend (Docker) | fix | in_progress | high       | ["task-034", "task-036", "task-038", "task-042"] | Jules     |
 | task-044     | Revisão e Melhoria da Configuração de Containerização e Ambiente | refactor      | done        | high       | []                                  | Jules     |
 | task-011-test| Testes para a task-011 (is_approval_step)             | test          | done        | medium     | ["task-011"]                        | Jules     |
