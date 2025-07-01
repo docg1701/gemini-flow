@@ -1,39 +1,45 @@
+Com certeza, Galvani.
+
+Aqui está o conteúdo completo para o arquivo `working-plan.md`, formatado em Markdown como solicitado.
+
+```markdown
+---
 # Plano de Trabalho para Jules
-
 ## Objetivo Geral
-
-Desenvolver uma aplicação web stand-alone e containerizada chamada **"Planejador Gemini-Flow"**. A aplicação consistirá em um frontend **React (com TypeScript)** e um backend **Python (com FastAPI)**. Ela funcionará como um assistente de IA conversacional que guiará o usuário através de três fases de planejamento de projeto, controladas por um botão "Aprovar". A lógica da IA será alimentada dinamicamente por prompts armazenados no diretório `/prompts`. O resultado final será a geração de uma estrutura de projeto em um diretório de saída com timestamp, contendo um script `bootstrap.sh` interativo que solicitará ao usuário o caminho de instalação. Todo o sistema será executado via **Docker Compose**.
+Migrar o projeto "gemini-flow" de sua arquitetura atual (FastAPI + React/TypeScript) para uma aplicação monolítica em Python, utilizando o framework **NiceGUI** para a interface do usuário e o **LangChain** para orquestrar a lógica de negócio. O objetivo final do novo `gemini-flow` é atuar como um assistente de bootstrapping inteligente, que gera uma estrutura de projeto completa e um arquivo de contexto `GEMINI.md` robusto, preparando o ambiente para o uso subsequente da ferramenta `gemini-cli`.
 
 ## Passo a Passo da Execução para Jules
+1.  **Configuração Inicial e Estrutura do Projeto:**
+    * Crie uma nova estrutura de diretórios para o projeto unificado, por exemplo, um diretório `app/` na raiz.
+    * Remova os diretórios existentes `/frontend` e `/backend`.
+    * Atualize o arquivo `requirements.txt` para incluir `nicegui`, `langchain`, `langchain-google-genai` e quaisquer outras dependências necessárias. Remova `fastapi` e dependências relacionadas ao frontend antigo.
+    * Crie o arquivo de entrada principal, `app/main.py`, que será responsável por inicializar e executar a aplicação NiceGUI.
 
-### Seção 1: Estrutura e Configuração do Projeto
+2.  **Implementar Prova de Conceito (PoC) da Integração:**
+    * No `app/main.py`, crie uma página NiceGUI mínima (um "Olá, Mundo") para garantir que o servidor está a funcionar corretamente.
+    * Crie um módulo de orquestração `app/services/orchestrator.py`.
+    * Implemente uma função simples no orquestrador que use LangChain para fazer uma chamada básica ao modelo Gemini.
+    * Adicione um botão na página NiceGUI que chame essa função do orquestrador e exiba o resultado na interface. Isto validará a integração `NiceGUI <-> LangChain`.
 
-1.  Crie uma task do tipo `development` para estabelecer a estrutura de diretórios inicial. Na raiz do projeto, crie os diretórios `backend`, `frontend`, e `prompts`.
-2.  Crie uma task do tipo `development` para mover os arquivos de prompt existentes (`gemini-gem-*.md`) para o novo diretório `prompts`.
-3.  Crie uma task do tipo `documentation` para criar o arquivo `VISION.md` na raiz do projeto e preenchê-lo com a versão final e detalhada que foi consolidada.
-4.  Crie uma task do tipo `development` para inicializar o backend Python no diretório `backend`. Crie um arquivo `pyproject.toml` definindo as dependências: `fastapi`, `uvicorn[standard]`, `langchain`, `langchain-google-genai`, e `python-decouple`.
-5.  Crie uma task do tipo `development` para criar um módulo de configuração central no backend. Crie o arquivo `backend/config.py` que usará `python-decouple` para carregar variáveis de ambiente, como a `GEMINI_API_KEY`.
+3.  **Desenvolver a Interface do Wizard com NiceGUI:**
+    * Projete e implemente uma interface de usuário no formato de um wizard passo a passo usando NiceGUI.
+    * Crie módulos de UI separados dentro de um diretório `app/ui/` para cada etapa do wizard (ex: `ui/visao_geral.py`, `ui/pilha_tecnologica.py`, etc.).
+    * A interface deve coletar de forma interativa todas as informações necessárias para o bootstrapping do projeto do usuário (nome do projeto, tecnologias, padrões, etc.).
 
-### Seção 2: Lógica do Backend
+4.  **Implementar o Orquestrador de Geração de Arquivos com LangChain:**
+    * Desenvolva a lógica principal no `app/services/orchestrator.py`.
+    * Crie "chains" no LangChain que recebam os dados coletados do wizard do NiceGUI como entrada.
+    * Implemente a lógica para processar essas entradas e gerar o conteúdo de vários arquivos de configuração (ex: `Dockerfile`, `.gitignore`, `requirements.txt`).
+    * Preste atenção especial à lógica de geração do `GEMINI.md`, que deve ser dinamicamente construído com base nas escolhas do usuário para refletir a arquitetura, os padrões de código e os fluxos de trabalho do projeto.
 
-6.  Crie uma task do tipo `development` para implementar a máquina de estados e o orquestrador no `backend/orchestrator.py`. Este módulo deve definir os estados (`PLANNING`, `ISSUES`, `DEVOPS`), gerenciar o estado da sessão e carregar o prompt correspondente à fase ativa.
-7.  Crie uma task do tipo `development` para criar a API principal no `backend/main.py` com os endpoints `/start`, `/chat`, `/approve` e `/generate_files`.
-8.  Crie uma task do tipo `development` para refinar a comunicação entre backend e frontend. A resposta do endpoint `/chat` deve incluir um booleano `is_approval_step` para notificar o frontend quando o botão "Aprovar" deve ser habilitado.
-9.  Crie uma task do tipo `development` para implementar a lógica do script de bootstrap interativo. A função no backend que gera o `bootstrap.sh` deve criar um script que use `read -p` para solicitar ao usuário o caminho de instalação.
-10. Crie uma task do tipo `development` para implementar o tratamento de erros no backend. Adicione um middleware ao FastAPI em `main.py` para capturar exceções (ex: falha na API do Gemini) e retornar respostas de erro HTTP padronizadas.
+5.  **Gerar a Saída e Finalizar:**
+    * Implemente a funcionalidade que, ao final do wizard, cria um diretório de saída (ex: `/output/nome-do-projeto-do-usuario`).
+    * Escreva todos os arquivos gerados pelo orquestrador LangChain nesse diretório.
+    * Adicione uma tela final no wizard do NiceGUI que informe o usuário que o projeto foi gerado com sucesso e indique o caminho para os arquivos.
 
-### Seção 3: Interface e Experiência do Usuário (Frontend)
-
-11. Crie uma task do tipo `development` para inicializar a aplicação frontend no diretório `frontend` usando `npx create-react-app frontend --template typescript`.
-12. Crie uma task do tipo `development` para criar o fluxo de inicialização da sessão. Crie um componente no frontend que primeiro peça o "Nome do Projeto" e, após o envio, chame o endpoint `/start` e renderize a interface principal do chat.
-13. Crie uma task do tipo `development` para construir a interface principal do chat em `frontend/src/App.tsx`, contendo o indicador de fase, a janela de chat e o botão "Aprovar".
-14. Crie uma task do tipo `development` para gerenciar o estado do frontend (hooks do React) para o histórico do chat, a fase atual e o estado do botão "Aprovar", que será controlado pelo flag `is_approval_step` vindo do backend.
-15. Crie uma task do tipo `development` para implementar as funções de comunicação com a API no frontend, garantindo que todas as chamadas para os endpoints (`/start`, `/chat`, etc.) sejam tratadas.
-16. Crie uma task do tipo `development` para implementar o tratamento de erros no frontend. A lógica de comunicação com a API deve ser capaz de tratar as respostas de erro do backend e exibir uma mensagem amigável para o usuário na interface.
-17. Crie uma task do tipo `development` para aplicar um estilo visual básico e limpo à aplicação. Adicione um arquivo CSS global para garantir que a interface seja organizada e legível, sem a necessidade de um framework complexo.
-
-### Seção 4: Containerização e Documentação Final
-
-18. Crie uma task do tipo `development` para criar um `Dockerfile` multi-stage na raiz do projeto, conforme definido na visão.
-19. Crie uma task do tipo `development` para criar o arquivo `docker-compose.yml` na raiz para orquestrar o serviço, mapear portas e gerenciar variáveis de ambiente via `.env`.
-20. Crie uma task do tipo `documentation` para reescrever completamente o `README.md` principal. Ele deve explicar o propósito do "Planejador Gemini-Flow", sua arquitetura e como executá-lo com o comando `docker-compose up`.
+6.  **Testes e Documentação:**
+    * Crie testes unitários para a lógica no `app/services/orchestrator.py` para garantir que a geração de arquivos está correta.
+    * Atualize o `README.md` principal do projeto para refletir a nova arquitetura, o propósito e como executar a aplicação NiceGUI.
+    * Remova toda a documentação antiga relacionada à arquitetura FastAPI + React.
+---
+```
