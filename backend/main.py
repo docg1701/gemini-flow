@@ -15,8 +15,8 @@ except ImportError:
         GoogleAPIError = type("GoogleAPIError", (Exception,), {})
 
 
-from backend.orchestrator import Orchestrator, AppStates
-from backend.file_generator import create_project_structure_and_files # Added for bootstrap generation
+from orchestrator import Orchestrator, AppStates
+from file_generator import create_project_structure_and_files # Added for bootstrap generation
 
 # --- Setup Logging ---
 logger = logging.getLogger(__name__)
