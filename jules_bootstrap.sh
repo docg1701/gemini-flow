@@ -15,8 +15,8 @@ echo "Atualizando lista de pacotes e fazendo upgrade do sistema..."
 sudo apt-get -y -q update
 sudo apt-get -y -q full-upgrade
 
-echo "Instalando Node.js, npm, Python pip e venv..."
-sudo apt-get -y -q install nodejs npm
+echo "Instalando Node.js, npm, Python pip, venv e curl..."
+sudo apt-get -y -q install nodejs npm curl
 # sudo npm install -g npx # Removido conforme plano
 sudo apt-get -y -q install python3-pip python3-venv
 
