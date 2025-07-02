@@ -92,4 +92,13 @@ fi
 
 echo "Removendo pacotes não mais necessários..."
 sudo apt-get -y -q autoremove
+
+VENV_PATH="/opt/app-venv"
+echo "---------------------------------------------------------------------"
 echo "Bootstrap script concluído."
+echo "Ambiente virtual Python configurado em: $VENV_PATH"
+echo "Para executar scripts Python usando este ambiente, use:"
+echo "  sudo $VENV_PATH/bin/python seu_script.py"
+echo "Ou ative o venv (não recomendado para scripts automatizados):"
+echo "  source $VENV_PATH/bin/activate"
+echo "---------------------------------------------------------------------"
