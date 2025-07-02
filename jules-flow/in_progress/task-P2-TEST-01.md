@@ -15,11 +15,11 @@ tags: ["test", "integration", "nicegui", "langchain", "poc"]
 description: |
   Verificar a funcionalidade da Prova de Conceito (PoC) de integração NiceGUI-LangChain:
   1. Executar `app/main.py`.
-  2. Digitar nome no input.
+  2. Na interface, digitar um nome no campo de input.
   3. Clicar no botão "Chamar Gemini".
-  4. Observar se saudação personalizada é exibida.
-  5. Verificar responsividade da UI.
-  6. (Opcional) Verificar logs do servidor.
+  4. Observar se uma saudação personalizada é exibida na página.
+  5. Verificar se a UI permaneceu responsiva durante a chamada ao LLM.
+  6. (Opcional) Verificar os logs do servidor para quaisquer erros ou informações relevantes da chamada LangChain.
 
 # Não modificar esta seção manualmente. Jules irá preenchê-la.
 # ---------------------------------------------------------------
@@ -39,16 +39,16 @@ description: |
 ---
 
 ## Arquivos Relevantes (Escopo da Tarefa)
-* `app/main.py`
-* `app/services/orchestrator.py`
+* `app/main.py` (para execução)
+* `app/services/orchestrator.py` (para entender a lógica chamada)
 
 ## Critérios de Aceitação
-1. Aplicação inicia.
-2. Interação UI funciona.
-3. Resposta LLM exibida.
-4. Sem erros críticos na UI/logs.
-5. UI não congela.
+1. A aplicação inicia corretamente.
+2. A interação com o input e botão na UI funciona conforme o esperado.
+3. Uma resposta do LLM (saudação) é exibida na UI após o clique no botão.
+4. Não ocorrem erros visíveis na UI ou erros críticos nos logs do servidor durante a operação.
+5. A UI não congela durante a chamada ao LLM.
 
 ## Observações Adicionais
-Valida conexão UI <-> LLM.
+Este teste valida a conexão de ponta a ponta entre a UI e a chamada básica ao LLM via LangChain.
 ---

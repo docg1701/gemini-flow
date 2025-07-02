@@ -9,10 +9,10 @@
 | task-VIS     | Gerar/Atualizar VISION.md com base no working-plan.md e análise do código existente | documentation | done        | high       | []           | Jules     |
 | task-P1-DEV-01 | WP1: Criar estrutura app/ e remover /frontend, /backend | development | done        | high       | []           | Jules     |
 | task-P1-DEV-02 | WP1: Atualizar requirements.txt para NiceGUI e LangChain | development | done        | high       | ["task-P1-DEV-01"] | Jules     |
-| task-P1-DEV-03 | WP1: Criar app/main.py básico para NiceGUI | development | backlog    | high       | ["task-P1-DEV-01"] | Jules     |
-| task-P1-TEST-01 | WP1: Teste da estrutura básica e execução mínima de app/main.py | test | backlog    | medium     | ["task-P1-DEV-01", "task-P1-DEV-02", "task-P1-DEV-03"] | Jules     |
-| task-P2-DEV-01 | WP2: Criar app/services/orchestrator.py com função básica LangChain/Gemini | development | backlog    | high       | ["task-P1-DEV-03"] | Jules     |
-| task-P2-DEV-02 | WP2: Adicionar botão em app/main.py para chamar orquestrador e exibir resultado | development | backlog    | high       | ["task-P1-DEV-03", "task-P2-DEV-01"] | Jules     |
+| task-P1-DEV-03 | WP1: Criar app/main.py básico para NiceGUI | development | done        | high       | ["task-P1-DEV-01"] | Jules     |
+| task-P1-TEST-01 | WP1: Teste da estrutura básica e execução mínima de app/main.py | test | done        | medium     | ["task-P1-DEV-01", "task-P1-DEV-02", "task-P1-DEV-03"] | Jules     |
+| task-P2-DEV-01 | WP2: Criar app/services/orchestrator.py com função básica LangChain/Gemini | development | done        | high       | ["task-P1-DEV-03"] | Jules     |
+| task-P2-DEV-02 | WP2: Adicionar botão em app/main.py para chamar orquestrador e exibir resultado | development | done        | high       | ["task-P1-DEV-03", "task-P2-DEV-01"] | Jules     |
 | task-P2-TEST-01 | WP2: Teste da integração NiceGUI-LangChain (PoC) | test | backlog    | medium     | ["task-P2-DEV-01", "task-P2-DEV-02"] | Jules     |
 | task-P3-DEV-01 | WP3: Implementar estrutura do wizard com ui.stepper em NiceGUI | development | backlog    | high       | ["task-P1-DEV-03"] | Jules     |
 | task-P3-DEV-02 | WP3: Criar módulos de UI para cada passo do wizard e coletar dados | development | backlog    | high       | ["task-P3-DEV-01"] | Jules     |
