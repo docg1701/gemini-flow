@@ -1,5 +1,8 @@
+nicegui
+langchain
+langchain-google-genai
+python-dotenv
+pydantic
+pydantic-settings
 pytest
-fastapi
-uvicorn
 httpx
-python-decouple
