@@ -20,7 +20,26 @@ sudo apt-get -y -q install nodejs npm curl
 # sudo npm install -g npx # Removido conforme plano
 sudo apt-get -y -q install python3-pip python3-venv
 
+# Criar ambiente virtual e instalar dependências do requirements.txt
+VENV_PATH="/opt/app-venv"
+echo "Criando ambiente virtual Python em $VENV_PATH..."
+sudo python3 -m venv $VENV_PATH
+# O chown abaixo pode ser necessário se o script ou o usuário que executa a app não for root
+# sudo chown -R $(whoami):$(whoami) $VENV_PATH
+# Por enquanto, vamos assumir que o bootstrap e a execução da app ocorrem com privilégios suficientes
+# ou que o usuário padrão da VM tem acesso a /opt ou que o Docker lida com isso.
+
+if [ -f "requirements.txt" ]; then
+  echo "Instalando dependências de requirements.txt no ambiente virtual $VENV_PATH..."
+  sudo $VENV_PATH/bin/python -m pip install --no-cache-dir -r requirements.txt
+else
+  echo "AVISO: requirements.txt não encontrado na raiz. Pulando instalação de dependências."
+fi
+
 # Instalar Poetry (gerenciador de dependências Python)
+# Se Poetry for usado para gerenciar o projeto principal no futuro,
+# ele deve ser configurado para usar este venv ou criar o seu próprio dentro do projeto.
+# Por agora, a instalação de Poetry é mantida, mas não é usada para o requirements.txt principal.
 echo "Instalando Poetry..."
 export POETRY_HOME="/opt/poetry"
 curl -sSL https://install.python-poetry.org | sudo python3 -
