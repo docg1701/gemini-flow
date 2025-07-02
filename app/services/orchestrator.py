@@ -85,5 +85,4 @@ if __name__ == "__main__":
 
     greeting_empty_name = orchestrator.get_gemini_greeting("")
     print(f"Saudação (nome vazio): {greeting_empty_name}")
-
-```
+    
