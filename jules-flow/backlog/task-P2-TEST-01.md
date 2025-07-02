@@ -2,7 +2,7 @@
 id: task-P2-TEST-01
 title: "WP2: Teste da integração NiceGUI-LangChain (PoC)"
 type: test
-status: backlog
+status: backlog # Status in YAML header remains original, actual status in index.
 priority: medium
 dependencies: ["task-P2-DEV-01", "task-P2-DEV-02"]
 parent_plan_objective_id: "2"
@@ -10,7 +10,7 @@ discovered_research_needed: []
 assigned_to: Jules
 created_by: Jules
 created_at: 2024-07-31T14:06:00Z # Novo timestamp
-updated_at: 2024-07-31T14:06:00Z
+updated_at: 2024-07-31T14:06:00Z # This should be updated when task is modified
 tags: ["test", "integration", "nicegui", "langchain", "poc"]
 description: |
   Verificar a funcionalidade da Prova de Conceito (PoC) de integração NiceGUI-LangChain:
@@ -25,16 +25,24 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO
 # ---------------------------------------------------------------
-# outcome:
-# outcome_reason:
-# start_time:
-# end_time:
-# duration_minutes:
+# outcome: failure
+# outcome_reason: Missing Python dependencies (e.g., nicegui) due to `requirements.txt` not being installed by `jules_bootstrap.sh`.
+# start_time: # Placeholder, to be filled by execution platform if possible
+# end_time: # Placeholder
+# duration_minutes: # Placeholder
 # files_modified:
+#   - jules_bootstrap.sh
 # reference_documents_consulted:
-#   - task-P2-DEV-02.md
+#   - jules-flow/instructions-for-jules.md
+#   - requirements.txt
+#   - jules_bootstrap.sh
 # execution_details: |
-#   Detalhes da execução...
+#   1. Attempted to run `python app/main.py`.
+#   2. Encountered `ModuleNotFoundError: No module named 'nicegui'`.
+#   3. Verified `nicegui` and other dependencies are listed in `requirements.txt`.
+#   4. Inspected `jules_bootstrap.sh` and found it was not installing packages from `requirements.txt`.
+#   5. Updated `jules_bootstrap.sh` to include `sudo python3 -m pip install --no-cache-dir -r requirements.txt`.
+#   6. Task is being moved to `paused_environment` to await VM restart with the updated bootstrap script.
 # ---------------------------------------------------------------
 ---
 
