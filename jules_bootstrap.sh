@@ -20,6 +20,14 @@ sudo apt-get -y -q install nodejs npm curl
 # sudo npm install -g npx # Removido conforme plano
 sudo apt-get -y -q install python3-pip python3-venv
 
+# Instalar dependências do requirements.txt global (para NiceGUI, Langchain, etc.)
+if [ -f "requirements.txt" ]; then
+  echo "Instalando dependências de requirements.txt..."
+  sudo python3 -m pip install --no-cache-dir -r requirements.txt
+else
+  echo "AVISO: requirements.txt não encontrado na raiz. Pulando instalação."
+fi
+
 # Instalar Poetry (gerenciador de dependências Python)
 echo "Instalando Poetry..."
 export POETRY_HOME="/opt/poetry"
