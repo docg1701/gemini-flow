@@ -23,7 +23,7 @@ sudo apt-get -y -q install python3-pip python3-venv
 # Instalar Poetry (gerenciador de dependências Python)
 echo "Instalando Poetry..."
 export POETRY_HOME="/opt/poetry"
-curl -sSL https://install.python-poetry.org | python3 -
+curl -sSL https://install.python-poetry.org | sudo python3 -
 export PATH="$POETRY_HOME/bin:$PATH"
 
 # Configurar Poetry para não criar virtualenvs ou modificar o projeto
